@@ -139,12 +139,17 @@ function ndbperfinit()
   echo "innodb_file_per_table=1" >> $NDB_PERF_CONFIG
   echo "innodb_buffer_pool_size=64G" >> $NDB_PERF_CONFIG
   echo "innodb_mock_server_host=localhost:8080" >> $NDB_PERF_CONFIG
-  echo "thread_handling = pool-of-threads" >> $NDB_PERF_CONFIG
-  echo "thread_pool_size = 64" >> $NDB_PERF_CONFIG
-  echo "thread_pool_stall_limit = 10" >> $NDB_PERF_CONFIG
-  echo "thread_pool_idle_timeout = 60" >> $NDB_PERF_CONFIG
-  echo "thread_pool_max_threads = 50000" >> $NDB_PERF_CONFIG
-  echo "thread_pool_oversubscribe = 128" >> $NDB_PERF_CONFIG
+  echo "thread_handling=pool-of-threads" >> $NDB_PERF_CONFIG
+  echo "thread_pool_size=64" >> $NDB_PERF_CONFIG
+  echo "thread_pool_stall_limit=10" >> $NDB_PERF_CONFIG
+  echo "thread_pool_idle_timeout=60" >> $NDB_PERF_CONFIG
+  echo "thread_pool_max_threads=50000" >> $NDB_PERF_CONFIG
+  echo "thread_pool_oversubscribe=128" >> $NDB_PERF_CONFIG
+  echo "region_id=store-hl" >> $NDB_PERF_CONFIG
+  echo "cluster_id=hdd-01" >> $NDB_PERF_CONFIG
+  echo "pool_id=public" >> $NDB_PERF_CONFIG
+  INSTANCE_ID=test$RANDOM
+  echo "instance_id=$INSTANCE_ID" >> $NDB_PERF_CONFIG
   echo "bind-address=0.0.0.0" >> $NDB_PERF_CONFIG
   #echo "skip-grant-tables" >> $NDB_PERF_CONFIG
   echo "port=$PORT" >> $NDB_PERF_CONFIG
