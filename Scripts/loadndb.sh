@@ -301,12 +301,12 @@ function ndbinitprimaryreplica()
   echo "innodb_io_capacity_max=10000" >> $NDB_PRIMARY_CONFIG
   echo "innodb_file_per_table=1" >> $NDB_PRIMARY_CONFIG
   echo "innodb_buffer_pool_size=1G" >> $NDB_PRIMARY_CONFIG
+  echo "innodb_mock_server_host=localhost:8080" >> $NDB_PRIMARY_CONFIG
   echo "region_id=store-hl" >> $NDB_PRIMARY_CONFIG
   echo "cluster_id=hdd-01" >> $NDB_PRIMARY_CONFIG
   echo "pool_id=public" >> $NDB_PRIMARY_CONFIG
   INSTANCE_ID=test$RANDOM
   echo "instance_id=$INSTANCE_ID" >> $NDB_PRIMARY_CONFIG
-  echo "innodb_mock_server_host=localhost:8080" >> $NDB_PRIMARY_CONFIG
   echo "bind-address=0.0.0.0" >> $NDB_PRIMARY_CONFIG
   echo "port=$PORT" >> $NDB_PRIMARY_CONFIG
   echo "socket=/tmp/ndb.socket.$USER.primary" >> $NDB_PRIMARY_CONFIG
@@ -348,11 +348,11 @@ function ndbinitprimaryreplica()
   echo "innodb_io_capacity_max=10000" >> $NDB_REPLICA_CONFIG
   echo "innodb_file_per_table=1" >> $NDB_REPLICA_CONFIG
   echo "innodb_buffer_pool_size=1G" >> $NDB_REPLICA_CONFIG
+  echo "innodb_mock_server_host=localhost:8080" >> $NDB_REPLICA_CONFIG
   echo "region_id=store-hl" >> $NDB_REPLICA_CONFIG
   echo "cluster_id=hdd-01" >> $NDB_REPLICA_CONFIG
   echo "pool_id=public" >> $NDB_REPLICA_CONFIG
   echo "instance_id=$INSTANCE_ID" >> $NDB_REPLICA_CONFIG
-  echo "innodb_mock_server_host=localhost:8080" >> $NDB_REPLICA_CONFIG
   echo "bind-address=0.0.0.0" >> $NDB_REPLICA_CONFIG
   echo "port=$PORT" >> $NDB_REPLICA_CONFIG
   echo "socket=/tmp/ndb.socket.$USER.replica" >> $NDB_REPLICA_CONFIG
