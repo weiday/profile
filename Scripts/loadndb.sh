@@ -670,8 +670,10 @@ function ndbstartmulti()
   echo "Start ByteNDB primary server in normal mode"
   mysqld --defaults-file=$PRIMARY_CONFIG --datadir=$PRIMARY_DATADIR --gdb > $PRIMARY_DATADIR/error.log 2>&1 &
 
+  IFS=$'\n'
   for i in $(seq $NUM_REPLICAS)
   do
+    echo "i=$i"
     REPLICA_CONFIG=${NDB_CONFIG}.${i}
     if [ ! -f $REPLICA_CONFIG ]; then
       break
@@ -685,6 +687,7 @@ function ndbstartmulti()
     echo "Start ByteNDB replica server ${i} in normal mode"
     mysqld --defaults-file=$REPLICA_CONFIG --datadir=$REPLICA_DATADIR --gdb > $REPLICA_DATADIR/error.log 2>&1 &
   done
+  IFS=$' '
 }
 
 function ndbstopmulti()
@@ -703,6 +706,7 @@ function ndbstopmulti()
   echo "Stop ByteNDB primary server"
   mysqladmin --defaults-file=$PRIMARY_CONFIG --user=root --password=$NDB_DEFAULT_PASSWORD shutdown
 
+  IFS=$'\n'
   for i in $(seq $NUM_REPLICAS)
   do
     REPLICA_CONFIG=${NDB_CONFIG}.${i}
@@ -713,6 +717,7 @@ function ndbstopmulti()
     echo "Stop ByteNDB replica server ${i}"
     mysqladmin --defaults-file=$REPLICA_CONFIG --user=root --password=$NDB_DEFAULT_PASSWORD shutdown
   done
+  IFS=$' '
 }
 
 function ndbconnectmulti()
