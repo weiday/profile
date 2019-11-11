@@ -674,7 +674,7 @@ function ndbstartmulti()
   echo "ByteNDB primary server is starting "
   while :
   do
-    mysql --defaults-file=$PRIMARY_CONFIG --user=root --password=$NDB_DEFAULT_PASSWORD $DBNAME -e "select * from information_schema.innodb_tablespaces" > /dev/null 2>&1
+    mysql --defaults-file=$PRIMARY_CONFIG --user=root --password=$NDB_DEFAULT_PASSWORD mysql -e "select * from information_schema.innodb_tablespaces" > /dev/null 2>&1
     if [ $? = 0 ]; then
       echo
       break
