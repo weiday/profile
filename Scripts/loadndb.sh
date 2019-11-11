@@ -651,6 +651,11 @@ function ndbinitmulti()
 
 function ndbstartmulti()
 {
+  NUM_REPLICAS=$1
+  if [ -z $1 ]; then
+    NUM_REPLICAS=31
+  fi
+
   PRIMARY_CONFIG=${NDB_CONFIG}.0
   if [ ! -f $PRIMARY_CONFIG ]; then
     echo "Unable to find configuration file $PRIMARY_CONFIG"
@@ -665,8 +670,7 @@ function ndbstartmulti()
   echo "Start ByteNDB primary server in normal mode"
   mysqld --defaults-file=$PRIMARY_CONFIG --datadir=$PRIMARY_DATADIR --gdb > $PRIMARY_DATADIR/error.log 2>&1 &
 
-  MAX_REPLICAS=31
-  for i in $(seq $MAX_REPLICAS)
+  for i in $(seq $NUM_REPLICAS)
   do
     REPLICA_CONFIG=${NDB_CONFIG}.${i}
     if [ ! -f $REPLICA_CONFIG ]; then
@@ -685,6 +689,11 @@ function ndbstartmulti()
 
 function ndbstopmulti()
 {
+  NUM_REPLICAS=$1
+  if [ -z $1 ]; then
+    NUM_REPLICAS=31
+  fi
+
   PRIMARY_CONFIG=${NDB_CONFIG}.0
   if [ ! -f $PRIMARY_CONFIG ]; then
     echo "Unable to find configuration file $PRIMARY_CONFIG"
@@ -694,8 +703,7 @@ function ndbstopmulti()
   echo "Stop ByteNDB primary server"
   mysqladmin --defaults-file=$PRIMARY_CONFIG --user=root --password=$NDB_DEFAULT_PASSWORD shutdown
 
-  MAX_REPLICAS=31
-  for i in $(seq $MAX_REPLICAS)
+  for i in $(seq $NUM_REPLICAS)
   do
     REPLICA_CONFIG=${NDB_CONFIG}.${i}
     if [ ! -f $REPLICA_CONFIG ]; then
