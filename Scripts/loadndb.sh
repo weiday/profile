@@ -54,12 +54,12 @@ function ndbstartprimaryreplica()
 {
   PRIMARY_DATADIR=$(cat $CMDDIR/primary.cfg | awk '{print $1}')
   if [ ! -d $PRIMARY_DATADIR/mysql ]; then
-    echo "Master data directory $PRIMARY_DATADIR is not initialized yet"
+    echo "Primary data directory $PRIMARY_DATADIR is not initialized yet"
     return
   fi
   REPLICA_DATADIR=$(cat $CMDDIR/replica.cfg | awk '{print $1}')
   if [ ! -d $REPLICA_DATADIR/mysql ]; then
-    echo "Slave data directory $REPLICA_DATADIR is not initialized yet"
+    echo "Replica data directory $REPLICA_DATADIR is not initialized yet"
     return
   fi
 
@@ -361,7 +361,7 @@ function ndbinitprimaryreplica()
   echo "socket=/tmp/ndb.socket.$USER.replica" >> $NDB_REPLICA_CONFIG
 
   echo $MYSQLDVER
-  echo "Initialize master data directory with password $NDB_DEFAULT_PASSWORD"
+  echo "Initialize primary data directory with password $NDB_DEFAULT_PASSWORD"
   mysqld --defaults-file=$NDB_PRIMARY_CONFIG --initialize --init-file=$CMDDIR/mysql8_init.sql --basedir=$NDB_BASEDIR --datadir=$PRIMARY_DATADIR
   # No need to initialize replica, just share data with primary.
   cp -R $PRIMARY_DATADIR $REPLICA_DATADIR
@@ -506,4 +506,224 @@ function ndbrunpurewrite()
   fi
 
   sysbench --test=tests/db/oltp.lua --mysql-table-engine=innodb --oltp_tables_count=$NDB_DEFAULT_TABLE_COUNT --mysql-db=$DBNAME --oltp-table-size=$NDB_DEFAULT_TABLE_SIZE --mysql-user=$DBUSER --mysql-password=$NDB_DEFAULT_PASSWORD --mysql-port=$DBPORT --mysql-host=$DBHOST --rand-type=uniform --num-threads=$CONCURRENCY --max-requests=0 --max-requests=0 --oltp_simple_ranges=0 --oltp-distinct-ranges=0 --oltp-sum-ranges=0 --oltp-order-ranges=0 --oltp-point-selects=0 --rand-seed=42 --max-time=$DURATION --oltp-read-only=off --report-interval=10 --forced-shutdown=3 run
+}
+
+function ndbinitmulti()
+{
+  NDBPROC=`ps -ef | grep $USER | grep mysqld | grep -v safe | grep -v grep | awk '{print $2}'`
+  if [ -z "$NDBPROC" ]; then
+    echo "ByteNDB server is not active"
+  else
+    ndbstopmulti $2
+  fi
+
+  MYSQLDVER=$(mysqld --version)
+
+  NUM_REPLICAS=$1
+  if [ -z $1 ]; then
+    NUM_REPLICAS=0
+  fi
+
+  PRIMARY_DATADIR=$PWD/ndb_data_0
+  rm -rf $PRIMARY_DATADIR
+  PRIMARY_CONFIG=${NDB_CONFIG}.0
+  rm -f $PRIMARY_CONFIG
+  cp $CMDDIR/mysql_perf.cnf $PRIMARY_CONFIG
+
+  PORT=3600
+  if [ ! -z "$(echo $MYSQLDVER | grep 5.6)" ]; then
+    sed -i '/secure-file-priv/d' $PRIMARY_CONFIG
+  fi
+  sed -i '/innodb_file_per_table/d' $PRIMARY_CONFIG
+  sed -i '/innodb_buffer_pool_size/d' $PRIMARY_CONFIG
+  sed -i '/port/d' $PRIMARY_CONFIG
+  sed -i '/socket/d' $PRIMARY_CONFIG
+  sed -i '/skip-networking/d' $PRIMARY_CONFIG
+  sed -i '/performance_schema/d' $PRIMARY_CONFIG
+  sed -i '/thread_handling/d' $PRIMARY_CONFIG
+  sed -i '/innodb_log_file_size/d' $PRIMARY_CONFIG
+  sed -i '/innodb_io_capacity_max/d' $PRIMARY_CONFIG
+  sed -i '/innodb_io_capacity/d' $PRIMARY_CONFIG
+  echo "default-time-zone='+8:00'" >> $PRIMARY_CONFIG
+  echo "log-bin=mysql-bin" >> $PRIMARY_CONFIG
+  echo "sync_binlog=1" >> $PRIMARY_CONFIG
+  echo "server-id=0" >> $PRIMARY_CONFIG
+  echo "binlog-format=row" >> $PRIMARY_CONFIG
+  # Turn on GTID for ByteNDB
+  echo "gtid-mode=on" >> $PRIMARY_CONFIG
+  echo "enforce-gtid-consistency" >> $PRIMARY_CONFIG
+  echo "log-slave-updates" >> $PRIMARY_CONFIG
+  echo "master-info-repository=TABLE" >> $PRIMARY_CONFIG
+  echo "relay-log-info-repository=TABLE" >> $PRIMARY_CONFIG
+  echo "binlog-checksum=NONE" >> $PRIMARY_CONFIG
+  # Disable binlog for ByteNDB
+  echo "disable_log_bin" >> $PRIMARY_CONFIG
+  echo "innodb_data_file_path=ibdata1:512M:autoextend" >> $PRIMARY_CONFIG
+  echo "innodb_io_capacity=6000" >> $PRIMARY_CONFIG
+  echo "innodb_io_capacity_max=10000" >> $PRIMARY_CONFIG
+  echo "innodb_file_per_table=1" >> $PRIMARY_CONFIG
+  echo "innodb_buffer_pool_size=1G" >> $PRIMARY_CONFIG
+  echo "loose-innodb_mock_server_host=localhost:8080" >> $PRIMARY_CONFIG
+  echo "region_id=store-hl" >> $PRIMARY_CONFIG
+  echo "cluster_id=hdd-01" >> $PRIMARY_CONFIG
+  echo "pool_id=public" >> $PRIMARY_CONFIG
+  INSTANCE_ID=test$RANDOM
+  echo "instance_id=$INSTANCE_ID" >> $PRIMARY_CONFIG
+  echo "bind-address=0.0.0.0" >> $PRIMARY_CONFIG
+  echo "port=$PORT" >> $PRIMARY_CONFIG
+  echo "socket=/tmp/ndb.socket.$USER.0" >> $PRIMARY_CONFIG
+  echo "[client]" >> $PRIMARY_CONFIG
+  echo "port=$PORT" >> $PRIMARY_CONFIG
+  echo "socket=/tmp/ndb.socket.$USER.0" >> $PRIMARY_CONFIG
+
+  echo $MYSQLDVER
+  echo "Initialize primary data directory with password $NDB_DEFAULT_PASSWORD"
+  mysqld --defaults-file=$PRIMARY_CONFIG --initialize --init-file=$CMDDIR/mysql8_init.sql --basedir=$NDB_BASEDIR --datadir=$PRIMARY_DATADIR
+
+  # Save configuration
+  echo "$PRIMARY_DATADIR" > $CMDDIR/ndb.cfg.0
+
+  if [ $NUM_REPLICAS -lt 1 ]; then
+    return
+  fi
+
+  for i in $(seq $NUM_REPLICAS)
+  do
+    REPLICA_DATADIR=$PWD/ndb_data_${i}
+    rm -rf $REPLICA_DATADIR
+    REPLICA_CONFIG=${NDB_CONFIG}.${i}
+    rm -f $REPLICA_CONFIG
+    cp $CMDDIR/mysql_perf.cnf $REPLICA_CONFIG
+
+    PORT=$(( PORT+1 ))    # increments $PORT
+    if [ ! -z "$(echo $MYSQLDVER | grep 5.6)" ]; then
+      sed -i '/secure-file-priv/d' $REPLICA_CONFIG
+    fi
+    sed -i '/innodb_file_per_table/d' $REPLICA_CONFIG
+    sed -i '/innodb_buffer_pool_size/d' $REPLICA_CONFIG
+    sed -i '/port/d' $REPLICA_CONFIG
+    sed -i '/socket/d' $REPLICA_CONFIG
+    sed -i '/skip-networking/d' $REPLICA_CONFIG
+    sed -i '/performance_schema/d' $REPLICA_CONFIG
+    sed -i '/thread_handling/d' $REPLICA_CONFIG
+    sed -i '/innodb_log_file_size/d' $REPLICA_CONFIG
+    sed -i '/innodb_io_capacity_max/d' $REPLICA_CONFIG
+    sed -i '/innodb_io_capacity/d' $REPLICA_CONFIG
+    echo "default-time-zone='+8:00'" >> $REPLICA_CONFIG
+    echo "log-bin=mysql-bin" >> $REPLICA_CONFIG
+    echo "sync_binlog=1" >> $REPLICA_CONFIG
+    echo "server-id=${i}" >> $REPLICA_CONFIG
+    echo "binlog-format=row" >> $REPLICA_CONFIG
+    # Turn on GTID for ByteNDB
+    echo "gtid-mode=on" >> $REPLICA_CONFIG
+    echo "enforce-gtid-consistency" >> $REPLICA_CONFIG
+    echo "log-slave-updates" >> $REPLICA_CONFIG
+    echo "master-info-repository=TABLE" >> $REPLICA_CONFIG
+    echo "relay-log-info-repository=TABLE" >> $REPLICA_CONFIG
+    echo "binlog-checksum=NONE" >> $REPLICA_CONFIG
+    # Disable binlog for ByteNDB
+    echo "disable_log_bin" >> $REPLICA_CONFIG
+    echo "replica-mode=on" >> $REPLICA_CONFIG
+    echo "innodb_data_file_path=ibdata1:512M:autoextend" >> $REPLICA_CONFIG
+    echo "innodb_io_capacity=6000" >> $REPLICA_CONFIG
+    echo "innodb_io_capacity_max=10000" >> $REPLICA_CONFIG
+    echo "innodb_file_per_table=1" >> $REPLICA_CONFIG
+    echo "innodb_buffer_pool_size=1G" >> $REPLICA_CONFIG
+    echo "loose-innodb_mock_server_host=localhost:8080" >> $REPLICA_CONFIG
+    echo "region_id=store-hl" >> $REPLICA_CONFIG
+    echo "cluster_id=hdd-01" >> $REPLICA_CONFIG
+    echo "pool_id=public" >> $REPLICA_CONFIG
+    echo "instance_id=$INSTANCE_ID" >> $REPLICA_CONFIG
+    echo "bind-address=0.0.0.0" >> $REPLICA_CONFIG
+    echo "port=$PORT" >> $REPLICA_CONFIG
+    echo "socket=/tmp/ndb.socket.$USER.${i}" >> $REPLICA_CONFIG
+    echo "[client]" >> $REPLICA_CONFIG
+    echo "port=$PORT" >> $REPLICA_CONFIG
+    echo "socket=/tmp/ndb.socket.$USER.${i}" >> $REPLICA_CONFIG
+
+    # No need to initialize replica, just share data with primary.
+    cp -R $PRIMARY_DATADIR $REPLICA_DATADIR
+
+    # Save configuration
+    echo "$REPLICA_DATADIR" > $CMDDIR/ndb.cfg.${i}
+  done
+}
+
+function ndbstartmulti()
+{
+  PRIMARY_CONFIG=${NDB_CONFIG}.0
+  if [ ! -f $PRIMARY_CONFIG ]; then
+    echo "Unable to find configuration file $PRIMARY_CONFIG"
+    return
+  fi
+  PRIMARY_DATADIR=$(cat $CMDDIR/ndb.cfg.0 | awk '{print $1}')
+  if [ ! -d $PRIMARY_DATADIR/mysql ]; then
+    echo "Primary data directory $PRIMARY_DATADIR is not initialized yet"
+    return
+  fi
+
+  echo "Start ByteNDB primary server in normal mode"
+  mysqld --defaults-file=$PRIMARY_CONFIG --datadir=$PRIMARY_DATADIR --gdb > $PRIMARY_DATADIR/error.log 2>&1 &
+
+  MAX_REPLICAS=31
+  for i in $(seq $MAX_REPLICAS)
+  do
+    REPLICA_CONFIG=${NDB_CONFIG}.${i}
+    if [ ! -f $REPLICA_CONFIG ]; then
+      break
+    fi
+    REPLICA_DATADIR=$(cat $CMDDIR/ndb.cfg.$i | awk '{print $1}')
+    if [ ! -d $REPLICA_DATADIR/mysql ]; then
+      echo "Replica data directory $REPLICA_DATADIR is not initialized yet"
+      break
+    fi
+
+    echo "Start ByteNDB replica server ${i} in normal mode"
+    mysqld --defaults-file=$REPLICA_CONFIG --datadir=$REPLICA_DATADIR --gdb > $REPLICA_DATADIR/error.log 2>&1 &
+  done
+}
+
+function ndbstopmulti()
+{
+  PRIMARY_CONFIG=${NDB_CONFIG}.0
+  if [ ! -f $PRIMARY_CONFIG ]; then
+    echo "Unable to find configuration file $PRIMARY_CONFIG"
+    return
+  fi
+
+  echo "Stop ByteNDB primary server"
+  mysqladmin --defaults-file=$PRIMARY_CONFIG --user=root --password=$NDB_DEFAULT_PASSWORD shutdown
+
+  MAX_REPLICAS=31
+  for i in $(seq $MAX_REPLICAS)
+  do
+    REPLICA_CONFIG=${NDB_CONFIG}.${i}
+    if [ ! -f $REPLICA_CONFIG ]; then
+      break
+    fi
+
+    echo "Stop ByteNDB replica server ${i}"
+    mysqladmin --defaults-file=$REPLICA_CONFIG --user=root --password=$NDB_DEFAULT_PASSWORD shutdown
+  done
+}
+
+function ndbconnectmulti()
+{
+  SERVER_ID=$1
+  if [ -z $SERVER_ID ]; then
+    SERVER_ID=0
+  fi
+
+  SERVER_CONFIG=${NDB_CONFIG}.${SERVER_ID}
+  if [ ! -f $SERVER_CONFIG ]; then
+    echo "Unable to find configuration file $SERVER_CONFIG"
+    return
+  fi
+
+  DBNAME=$2
+  if [ -z $DBNAME ]; then
+    DBNAME=test
+  fi
+
+  mysql --defaults-file=$SERVER_CONFIG --user=root --password=$NDB_DEFAULT_PASSWORD $DBNAME
 }
