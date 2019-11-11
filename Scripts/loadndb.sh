@@ -587,6 +587,7 @@ function ndbinitmulti()
     return
   fi
 
+  IFS=$'\n'
   for i in $(seq $NUM_REPLICAS)
   do
     REPLICA_DATADIR=$PWD/ndb_data_${i}
@@ -647,6 +648,7 @@ function ndbinitmulti()
     # Save configuration
     echo "$REPLICA_DATADIR" > $CMDDIR/ndb.cfg.${i}
   done
+  IFS=$' '
 }
 
 function ndbstartmulti()
