@@ -671,6 +671,17 @@ function ndbstartmulti()
 
   echo "Start ByteNDB primary server in normal mode"
   mysqld --defaults-file=$PRIMARY_CONFIG --datadir=$PRIMARY_DATADIR --gdb > $PRIMARY_DATADIR/error.log 2>&1 &
+  echo "ByteNDB primary server is starting "
+  while :
+  do
+    mysql --defaults-file=$PRIMARY_CONFIG --user=root --password=$NDB_DEFAULT_PASSWORD $DBNAME -e "select * from information_schema.innodb_tablespaces" > /dev/null 2>&1
+    if [ $? = 0 ]; then
+      echo
+      break
+    fi
+    printf "."
+    sleep 0.5
+  done
 
   IFS=$'\n'
   for i in $(seq $NUM_REPLICAS)
