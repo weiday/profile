@@ -673,7 +673,6 @@ function ndbstartmulti()
   IFS=$'\n'
   for i in $(seq $NUM_REPLICAS)
   do
-    echo "i=$i"
     REPLICA_CONFIG=${NDB_CONFIG}.${i}
     if [ ! -f $REPLICA_CONFIG ]; then
       break
