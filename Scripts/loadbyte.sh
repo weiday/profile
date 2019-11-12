@@ -6,7 +6,7 @@ function byteformat()
     return
   fi
 
-  git ls-files --modified --others --exclude-standard | grep -v source_downloads | grep -e "\.h" -e "\.ic" -e "\.cc" | xargs ${FORMAT}
+  git ls-files --modified --others --exclude-standard | grep -v source_downloads | grep -e "\.h" -e "\.ic" -e "\.cc" | grep -v "\.pp" | xargs ${FORMAT}
 }
 
 function byteformatfix()
@@ -17,7 +17,7 @@ function byteformatfix()
     return
   fi
 
-  git ls-files --modified --others --exclude-standard | grep -v source_downloads | grep -e "\.h" -e "\.ic" -e "\.cc" | xargs ${FORMATFIX}
+  git ls-files --modified --others --exclude-standard | grep -v source_downloads | grep -e "\.h" -e "\.ic" -e "\.cc" | grep -v "\.pp" | xargs ${FORMATFIX}
 }
 
 function bytelint()
