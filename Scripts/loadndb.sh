@@ -216,7 +216,7 @@ function ndbinit()
   echo "loose-innodb_mock_server_host=localhost:8080" >> $NDB_CONFIG
   echo "log_path=blob://store-hl/hdd-01/public/" >> $NDB_CONFIG
   echo "data_path=blob://store-hl-test/wangfan@n26-036-136/public/" >> $NDB_CONFIG
-  INSTANCE_ID=test$RANDOM
+  INSTANCE_ID=test$(date +%s)
   echo "instance_id=$INSTANCE_ID" >> $NDB_CONFIG
   echo "bind-address=0.0.0.0" >> $NDB_CONFIG
   #echo "skip-grant-tables" >> $NDB_CONFIG
@@ -303,7 +303,7 @@ function ndbinitprimaryreplica()
   echo "loose-innodb_mock_server_host=localhost:8080" >> $NDB_PRIMARY_CONFIG
   echo "log_path=blob://store-hl/hdd-01/public/" >> $NDB_PRIMARY_CONFIG
   echo "data_path=blob://store-hl-test/wangfan@n26-036-136/public/" >> $NDB_PRIMARY_CONFIG
-  INSTANCE_ID=test$RANDOM
+  INSTANCE_ID=test$(date +%s)
   echo "instance_id=$INSTANCE_ID" >> $NDB_PRIMARY_CONFIG
   echo "bind-address=0.0.0.0" >> $NDB_PRIMARY_CONFIG
   echo "port=$PORT" >> $NDB_PRIMARY_CONFIG
@@ -563,7 +563,7 @@ function ndbinitmulti()
   echo "loose-innodb_mock_server_host=localhost:8080" >> $PRIMARY_CONFIG
   echo "log_path=blob://store-hl/hdd-01/public/" >> $PRIMARY_CONFIG
   echo "data_path=blob://store-hl-test/wangfan@n26-036-136/public/" >> $PRIMARY_CONFIG
-  INSTANCE_ID=test$RANDOM
+  INSTANCE_ID=test$(date +%s)
   echo "instance_id=$INSTANCE_ID" >> $PRIMARY_CONFIG
   echo "bind-address=0.0.0.0" >> $PRIMARY_CONFIG
   echo "port=$PORT" >> $PRIMARY_CONFIG

@@ -149,7 +149,7 @@ function ndbperfinit()
   echo "thread_pool_oversubscribe=128" >> $NDB_PERF_CONFIG
   echo "log_path=blob://store-hl/hdd-01/public/" >> $NDB_PERF_CONFIG
   echo "data_path=blob://store-hl-test/root@n29-028-077/public/" >> $NDB_PERF_CONFIG
-  INSTANCE_ID=test$RANDOM
+  INSTANCE_ID=test$(date +%s)
   echo "instance_id=$INSTANCE_ID" >> $NDB_PERF_CONFIG
   echo "bind-address=0.0.0.0" >> $NDB_PERF_CONFIG
   #echo "skip-grant-tables" >> $NDB_PERF_CONFIG
