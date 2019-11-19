@@ -138,6 +138,8 @@ function ndbperfinit()
   echo "innodb_io_capacity_max=10000" >> $NDB_PERF_CONFIG
   echo "innodb_file_per_table=1" >> $NDB_PERF_CONFIG
   echo "innodb_buffer_pool_size=128G" >> $NDB_PERF_CONFIG
+  echo "innodb_log_writer_group_commit_timeout=100" >> $NDB_PERF_CONFIG
+  echo "innodb_log_writer_group_commit_len=64K" >> $NDB_PERF_CONFIG
   echo "loose-innodb_mock_server_host=localhost:8080" >> $NDB_PERF_CONFIG
   echo "thread_handling=pool-of-threads" >> $NDB_PERF_CONFIG
   echo "thread_pool_size=64" >> $NDB_PERF_CONFIG
