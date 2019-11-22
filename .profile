@@ -36,21 +36,6 @@ export CMDDIR=$HOME/Command
 export LIBDIR=$HOME/Library
 export REPORTDIR=$HOME/Report
 
-# Set DB related environment variables
-export PGDATA=$DATADIR/pgdata
-export CNDATA=$DATADIR/cndata
-export CNDATA2=$DATADIR/cndata2
-export DTDATA=$DATADIR/dtdata
-export PGPORT=8888
-export PNPORT=8887
-export CNPORT=8886
-export CNPORT2=8885
-export DTPORT=8884
-export REPLPORT=8883
-export CLUSTER_MIN_DYNPORT=5000
-export CLUSTER_MAX_DYNPORT=5200
-export COCKROACHPORT=30000
-
 # Set PATH
 export PATH=$PATH:$HOME/postgres/bin
 export PATH=$PATH:$HOME/Scripts
