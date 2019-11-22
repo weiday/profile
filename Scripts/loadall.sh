@@ -9,3 +9,4 @@ source $HOME/Scripts/loadsar.sh
 source $HOME/Scripts/loadbyte.sh
 source $HOME/Scripts/loadndb.sh
 source $HOME/Scripts/loadndbperf.sh
+source $HOME/Scripts/loadpg.sh
