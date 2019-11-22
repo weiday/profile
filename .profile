@@ -64,7 +64,6 @@ export PATH=$PATH:$HOME/pt/bin
 export PATH=$PATH:$HOME/oprofile/bin
 export PATH=$HOME/gdb/bin:$PATH
 export PATH=$HOME/cmake/bin:$PATH
-export PATH=$HOME/unixODBC/bin:$PATH
 export PATH=$PATH:$HOME/graphviz/bin
 export PATH=$PATH:$HOME/inotify-tools/bin
 export PATH=$PATH:$HOME/otp/bin
@@ -75,15 +74,8 @@ export PATH=$PATH:$HOME/sysstat/bin
 
 # Set LD_LIBRARY_PATH
 export LD_LIBRARY_PATH=$HOME/mysql/lib:$LD_LIBRARY_PATH:$HOME/mysql/lib/plugin
-export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:$HOME/mysql-cluster/lib
-export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:$HOME/unixODBC/lib
-export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:$HOME/psqlODBC/lib
-export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:$HOME/yaml/lib
-export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:/usr/local/lib
-
-# Set ODBC
-export ODBCINI=$HOME/unixODBC/etc/odbc.ini
-export ODBCSYSINI=$HOME/unixODBC/etc
+export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:$HOME/llvm/lib
+export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:$HOME/postgres/lib
 
 # Set GDB
 export GDBHISTFILE=$HOME/.gdb_history
