@@ -20,7 +20,7 @@ function ndbperfstart()
   TYPE=$1
   if [ -z $TYPE ]; then
     echo "Start ByteNDB server in normal mode"
-    env TCMALLOC_RELEASE_RATE=50.0 mysqld --defaults-file=$NDB_PERF_CONFIG --datadir=$NDB_DATADIR --gdb > $NDB_DATADIR/error.log 2>&1 &
+    env TCMALLOC_RELEASE_RATE=500.0 mysqld --defaults-file=$NDB_PERF_CONFIG --datadir=$NDB_DATADIR --gdb > $NDB_DATADIR/error.log 2>&1 &
   elif [ $TYPE = "trace" ]; then
     echo "Start ByteNDB server in tracing mode"
     mysqld --defaults-file=$NDB_PERF_CONFIG --datadir=$NDB_DATADIR --gdb --debug=d:t:i:o,$PWD/mysqld.trace > $NDB_DATADIR/error.log 2>&1 &
