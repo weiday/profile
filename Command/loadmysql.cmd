@@ -25,6 +25,20 @@ define mach_read_from_2
   printf "%u\n", ((unsigned short)$c0 << 8) + ((unsigned short)$c1)
 end
 
+define mach_read_from_3
+  set $c0=*(unsigned char*)((char*)$arg0)
+  set $c1=*(unsigned char*)((char*)$arg0+1)
+  set $c2=*(unsigned char*)((char*)$arg0+2)
+  printf "%u\n", ((unsigned int)$c1 << 16) + ((unsigned int)$c2 << 8) + ((unsigned int)$c3)
+end
+
+define hex_read_from_3
+  set $c0=*(unsigned char*)((char*)$arg0)
+  set $c1=*(unsigned char*)((char*)$arg0+1)
+  set $c2=*(unsigned char*)((char*)$arg0+2)
+  printf "%02X %02X %02X\n", $c0, $c1, $c2
+end
+
 define hex_read_from_2
   set $c0=*(unsigned char*)((char*)$arg0)
   set $c1=*(unsigned char*)((char*)$arg0+1)
