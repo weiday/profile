@@ -220,8 +220,10 @@ function ndbinit()
   echo "instance_id=$INSTANCE_ID" >> $NDB_CONFIG
   rm -rf /tmp/$INSTANCE_ID
   mkdir -p /tmp/$INSTANCE_ID/1/lst_log
+  echo "log_lst_log_level=info" >> $NDB_CONFIG
   echo "log_lst_log_dir=/tmp/$INSTANCE_ID/1/lst_log" >> $NDB_CONFIG
   mkdir -p /tmp/$INSTANCE_ID/1/pst_log
+  echo "log_pst_log_level=info" >> $NDB_CONFIG
   echo "log_pst_log_dir=/tmp/$INSTANCE_ID/1/pst_log" >> $NDB_CONFIG
   echo "bind-address=0.0.0.0" >> $NDB_CONFIG
   #echo "skip-grant-tables" >> $NDB_CONFIG
@@ -312,8 +314,10 @@ function ndbinitprimaryreplica()
   echo "instance_id=$INSTANCE_ID" >> $NDB_PRIMARY_CONFIG
   rm -rf /tmp/$INSTANCE_ID
   mkdir -p /tmp/$INSTANCE_ID/1/lst_log
+  echo "log_lst_log_level=info" >> $NDB_PRIMARY_CONFIG
   echo "log_lst_log_dir=/tmp/$INSTANCE_ID/1/lst_log" >> $NDB_PRIMARY_CONFIG
   mkdir -p /tmp/$INSTANCE_ID/1/pst_log
+  echo "log_pst_log_level=info" >> $NDB_PRIMARY_CONFIG
   echo "log_pst_log_dir=/tmp/$INSTANCE_ID/1/pst_log" >> $NDB_PRIMARY_CONFIG
   echo "bind-address=0.0.0.0" >> $NDB_PRIMARY_CONFIG
   echo "port=$PORT" >> $NDB_PRIMARY_CONFIG
@@ -361,8 +365,10 @@ function ndbinitprimaryreplica()
   echo "data_path=blob://store-hl-test/wangfan@n26-036-136/public/" >> $NDB_REPLICA_CONFIG
   echo "instance_id=$INSTANCE_ID" >> $NDB_REPLICA_CONFIG
   mkdir -p /tmp/$INSTANCE_ID/2/lst_log
+  echo "log_lst_log_level=info" >> $NDB_REPLICA_CONFIG
   echo "log_lst_log_dir=/tmp/$INSTANCE_ID/2/lst_log" >> $NDB_REPLICA_CONFIG
   mkdir -p /tmp/$INSTANCE_ID/2/pst_log
+  echo "log_pst_log_level=info" >> $NDB_REPLICA_CONFIG
   echo "log_pst_log_dir=/tmp/$INSTANCE_ID/2/pst_log" >> $NDB_REPLICA_CONFIG
   echo "bind-address=0.0.0.0" >> $NDB_REPLICA_CONFIG
   echo "port=$PORT" >> $NDB_REPLICA_CONFIG
@@ -581,8 +587,10 @@ function ndbinitmulti()
   echo "instance_id=$INSTANCE_ID" >> $PRIMARY_CONFIG
   rm -rf /tmp/$INSTANCE_ID
   mkdir -p /tmp/$INSTANCE_ID/0/lst_log
+  echo "log_lst_log_level=info" >> $PRIMARY_CONFIG
   echo "log_lst_log_dir=/tmp/$INSTANCE_ID/0/lst_log" >> $PRIMARY_CONFIG
   mkdir -p /tmp/$INSTANCE_ID/0/pst_log
+  echo "log_pst_log_level=info" >> $PRIMARY_CONFIG
   echo "log_pst_log_dir=/tmp/$INSTANCE_ID/0/pst_log" >> $PRIMARY_CONFIG
   echo "bind-address=0.0.0.0" >> $PRIMARY_CONFIG
   echo "port=$PORT" >> $PRIMARY_CONFIG
@@ -650,8 +658,10 @@ function ndbinitmulti()
     echo "data_path=blob://store-hl-test/wangfan@n26-036-136/public/" >> $REPLICA_CONFIG
     echo "instance_id=$INSTANCE_ID" >> $REPLICA_CONFIG
     mkdir -p /tmp/$INSTANCE_ID/${i}/lst_log
+    echo "log_lst_log_level=info" >> $REPLICA_CONFIG
     echo "log_lst_log_dir=/tmp/$INSTANCE_ID/${i}/lst_log" >> $REPLICA_CONFIG
     mkdir -p /tmp/$INSTANCE_ID/${i}/pst_log
+    echo "log_pst_log_level=info" >> $REPLICA_CONFIG
     echo "log_pst_log_dir=/tmp/$INSTANCE_ID/${i}/pst_log" >> $REPLICA_CONFIG
     echo "bind-address=0.0.0.0" >> $REPLICA_CONFIG
     echo "port=$PORT" >> $REPLICA_CONFIG
