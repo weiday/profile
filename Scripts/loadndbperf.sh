@@ -101,6 +101,8 @@ function ndbperfinit()
 
   NDB_DATADIR=$BASE_DATADIR/ndb_data
   rm -rf $NDB_DATADIR
+  NDB_TMPDIR=$BASE_DATADIR/ndb_tmp
+  rm -rf $NDB_TMPDIR
 
   rm -f $NDB_PERF_CONFIG
   cp $CMDDIR/mysql_perf.cnf $NDB_PERF_CONFIG
@@ -133,6 +135,8 @@ function ndbperfinit()
   echo "binlog-checksum=NONE" >> $NDB_PERF_CONFIG
   # Disable binlog for ByteNDB
   echo "disable_log_bin" >> $NDB_PERF_CONFIG
+  mkdir -p $NDB_TMPDIR
+  echo "tmpdir=$NDB_TMPDIR" >> $NDB_PERF_CONFIG
   echo "innodb_data_file_path=ibdata1:512M:autoextend" >> $NDB_PERF_CONFIG
   echo "innodb_io_capacity=6000" >> $NDB_PERF_CONFIG
   echo "innodb_io_capacity_max=10000" >> $NDB_PERF_CONFIG
