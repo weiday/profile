@@ -152,7 +152,6 @@ function ndbperfinit()
   INSTANCE_ID=test$(date +%s)
   echo "instance_id=$INSTANCE_ID" >> $NDB_PERF_CONFIG
   echo "log_write_parallelism=64" >> $NDB_PERF_CONFIG
-  echo "log_pst_force_advance=1" >> $NDB_PERF_CONFIG
   rm -rf /tmp/$INSTANCE_ID
   mkdir -p /tmp/$INSTANCE_ID/1/lst_log
   echo "log_lst_log_level=info" >> $NDB_PERF_CONFIG
