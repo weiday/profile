@@ -152,7 +152,7 @@ function ndbperfinit()
   echo "thread_pool_max_threads=50000" >> $NDB_PERF_CONFIG
   echo "thread_pool_oversubscribe=128" >> $NDB_PERF_CONFIG
   echo "log_path=blob://store-hl/hdd-01/public/" >> $NDB_PERF_CONFIG
-  echo "data_path=blob://store-hl-test/root@n29-028-077/public/" >> $NDB_PERF_CONFIG
+  echo "data_path=mock://store-hl-test/root@n29-028-077/public/" >> $NDB_PERF_CONFIG
   INSTANCE_ID=test$(date +%s)
   echo "instance_id=$INSTANCE_ID" >> $NDB_PERF_CONFIG
   echo "log_write_parallelism=32" >> $NDB_PERF_CONFIG
