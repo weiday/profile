@@ -215,7 +215,7 @@ function ndbinit()
   echo "innodb_buffer_pool_size=1G" >> $NDB_CONFIG
   echo "loose-innodb_mock_server_host=localhost:8080" >> $NDB_CONFIG
   echo "log_path=blob://store-hl/hdd-01/public/" >> $NDB_CONFIG
-  echo "data_path=blob://store-hl-test/wangfan@n26-036-136/public/" >> $NDB_CONFIG
+  echo "data_path=mock://store-hl-test/test_77/public/" >> $NDB_CONFIG
   INSTANCE_ID=test$(date +%s)
   echo "instance_id=$INSTANCE_ID" >> $NDB_CONFIG
   rm -rf /tmp/$INSTANCE_ID
@@ -309,7 +309,7 @@ function ndbinitprimaryreplica()
   echo "innodb_buffer_pool_size=1G" >> $NDB_PRIMARY_CONFIG
   echo "loose-innodb_mock_server_host=localhost:8080" >> $NDB_PRIMARY_CONFIG
   echo "log_path=blob://store-hl/hdd-01/public/" >> $NDB_PRIMARY_CONFIG
-  echo "data_path=blob://store-hl-test/wangfan@n26-036-136/public/" >> $NDB_PRIMARY_CONFIG
+  echo "data_path=mock://store-hl-test/test_77/public/" >> $NDB_PRIMARY_CONFIG
   INSTANCE_ID=test$(date +%s)
   echo "instance_id=$INSTANCE_ID" >> $NDB_PRIMARY_CONFIG
   rm -rf /tmp/$INSTANCE_ID
@@ -362,7 +362,7 @@ function ndbinitprimaryreplica()
   echo "innodb_buffer_pool_size=1G" >> $NDB_REPLICA_CONFIG
   echo "loose-innodb_mock_server_host=localhost:8080" >> $NDB_REPLICA_CONFIG
   echo "log_path=blob://store-hl/hdd-01/public/" >> $NDB_REPLICA_CONFIG
-  echo "data_path=blob://store-hl-test/wangfan@n26-036-136/public/" >> $NDB_REPLICA_CONFIG
+  echo "data_path=mock://store-hl-test/test_77/public/" >> $NDB_REPLICA_CONFIG
   echo "instance_id=$INSTANCE_ID" >> $NDB_REPLICA_CONFIG
   mkdir -p /tmp/$INSTANCE_ID/2/lst_log
   echo "log_lst_log_level=info" >> $NDB_REPLICA_CONFIG
@@ -582,7 +582,7 @@ function ndbinitmulti()
   echo "innodb_buffer_pool_size=1G" >> $PRIMARY_CONFIG
   echo "loose-innodb_mock_server_host=localhost:8080" >> $PRIMARY_CONFIG
   echo "log_path=blob://store-hl/hdd-01/public/" >> $PRIMARY_CONFIG
-  echo "data_path=blob://store-hl-test/wangfan@n26-036-136/public/" >> $PRIMARY_CONFIG
+  echo "data_path=mock://store-hl-test/test_77/public/" >> $PRIMARY_CONFIG
   INSTANCE_ID=test$(date +%s)
   echo "instance_id=$INSTANCE_ID" >> $PRIMARY_CONFIG
   rm -rf /tmp/$INSTANCE_ID
@@ -655,7 +655,7 @@ function ndbinitmulti()
     echo "innodb_buffer_pool_size=1G" >> $REPLICA_CONFIG
     echo "loose-innodb_mock_server_host=localhost:8080" >> $REPLICA_CONFIG
     echo "log_path=blob://store-hl/hdd-01/public/" >> $REPLICA_CONFIG
-    echo "data_path=blob://store-hl-test/wangfan@n26-036-136/public/" >> $REPLICA_CONFIG
+    echo "data_path=mock://store-hl-test/test_77/public/" >> $REPLICA_CONFIG
     echo "instance_id=$INSTANCE_ID" >> $REPLICA_CONFIG
     mkdir -p /tmp/$INSTANCE_ID/${i}/lst_log
     echo "log_lst_log_level=info" >> $REPLICA_CONFIG
