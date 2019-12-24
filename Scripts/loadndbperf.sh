@@ -21,6 +21,9 @@ function ndbperfstart()
   if [ -z $TYPE ]; then
     echo "Start ByteNDB server in normal mode"
     mysqld --defaults-file=$NDB_PERF_CONFIG --datadir=$NDB_DATADIR --gdb > $NDB_DATADIR/error.log 2>&1 &
+  elif [ $TYPE = "safe" ]; then
+    echo "Start ByteNDB server in safe mode"
+    mysqld_safe --defaults-file=$NDB_PERF_CONFIG --datadir=$NDB_DATADIR --gdb > $NDB_DATADIR/error.log 2>&1 &
   elif [ $TYPE = "trace" ]; then
     echo "Start ByteNDB server in tracing mode"
     mysqld --defaults-file=$NDB_PERF_CONFIG --datadir=$NDB_DATADIR --gdb --debug=d:t:i:o,$PWD/mysqld.trace > $NDB_DATADIR/error.log 2>&1 &
