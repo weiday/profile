@@ -780,3 +780,24 @@ function ndbconnectmulti()
 
   mysql --defaults-file=$SERVER_CONFIG --user=root --password=$NDB_DEFAULT_PASSWORD $DBNAME
 }
+
+function ndbconnecthost()
+{
+  if [ -z "$(cat /etc/issue | grep SUSE)" ]; then
+    LOCALIP=$(hostname -I | awk '{print $1}')
+  else
+    LOCALIP=$(hostname -i | awk '{print $1}')
+  fi
+
+  DBHOST=$1
+  if [ -z $DBHOST ]; then
+    DBHOST=$LOCALIP
+  fi
+
+  DBPORT=$2
+  if [ -z $DBPORT ]; then
+    DBPORT=3600
+  fi
+
+  mysql -h $DBHOST -P $DBPORT --user=root --password=$NDB_DEFAULT_PASSWORD
+}
