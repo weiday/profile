@@ -201,7 +201,7 @@ function ndbperfprepare()
     DBHOST=$LOCALIP
   fi
 
-  sysbench --test=tests/db/parallel_prepare.lua --oltp_tables_count=$NDB_PERF_DEFAULT_TABLE_COUNT --mysql-db=$DBNAME --oltp-table-size=$NDB_PERF_DEFAULT_TABLE_SIZE --mysql-user=$DBUSER --mysql-password=$NDB_PERF_DEFAULT_PASSWORD --mysql-port=$DBPORT --mysql-host=$DBHOST --num-threads=$NDB_PERF_DEFAULT_TABLE_COUNT --report-interval=10 run
+  sysbench --test=tests/db/parallel_prepare.lua --oltp_tables_count=$NDB_PERF_DEFAULT_TABLE_COUNT --mysql-db=$DBNAME --oltp-table-size=$NDB_PERF_DEFAULT_TABLE_SIZE --mysql-user=$DBUSER --mysql-password=$NDB_PERF_DEFAULT_PASSWORD --mysql-port=$DBPORT --mysql-host=$DBHOST --num-threads=$NDB_PERF_DEFAULT_TABLE_COUNT --report-interval=10 --percentile=99 run
 }
 
 function ndbperfrunwrite()
