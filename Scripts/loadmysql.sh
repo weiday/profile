@@ -685,3 +685,24 @@ function mysqlrunpurewrite()
 
   sysbench --test=tests/db/oltp.lua --mysql-table-engine=innodb --oltp_tables_count=$MYSQL_PERF_DEFAULT_TABLE_COUNT --mysql-db=$DBNAME --oltp-table-size=$MYSQL_PERF_DEFAULT_TABLE_SIZE --mysql-user=$DBUSER --mysql-password=$MYSQL_PERF_DEFAULT_PASSWORD --mysql-port=$DBPORT --mysql-host=$DBHOST --rand-type=uniform --num-threads=$CONCURRENCY --max-requests=0 --max-requests=0 --oltp_simple_ranges=0 --oltp-distinct-ranges=0 --oltp-sum-ranges=0 --oltp-order-ranges=0 --oltp-point-selects=0 --rand-seed=42 --max-time=$DURATION --oltp-read-only=off --report-interval=10 --percentile=99 --forced-shutdown=3 run
 }
+
+function mysqlconnecthost()
+{
+  if [ -z "$(cat /etc/issue | grep SUSE)" ]; then
+    LOCALIP=$(hostname -I | awk '{print $1}')
+  else
+    LOCALIP=$(hostname -i | awk '{print $1}')
+  fi
+
+  DBHOST=$1
+  if [ -z $DBHOST ]; then
+    DBHOST=$LOCALIP
+  fi
+
+  DBPORT=$2
+  if [ -z $DBPORT ]; then
+    DBPORT=3600
+  fi
+
+  mysql -h $DBHOST -P $DBPORT --user=root --password=$MYSQL_PERF_DEFAULT_PASSWORD
+}
