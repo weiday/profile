@@ -147,7 +147,7 @@ function ndbperfinit()
   echo "innodb_io_capacity_max=10000" >> $NDB_PERF_CONFIG
   echo "innodb_file_per_table=1" >> $NDB_PERF_CONFIG
   echo "innodb_buffer_pool_size=128G" >> $NDB_PERF_CONFIG
-  echo "innodb_log_writer_group_commit_timeout=100" >> $NDB_PERF_CONFIG
+  echo "innodb_log_writer_group_commit_timeout=500" >> $NDB_PERF_CONFIG
   echo "innodb_log_writer_group_commit_len=64K" >> $NDB_PERF_CONFIG
   echo "loose-innodb_mock_server_host=localhost:8080" >> $NDB_PERF_CONFIG
   echo "thread_handling=pool-of-threads" >> $NDB_PERF_CONFIG
@@ -156,8 +156,8 @@ function ndbperfinit()
   echo "thread_pool_idle_timeout=60" >> $NDB_PERF_CONFIG
   echo "thread_pool_max_threads=50000" >> $NDB_PERF_CONFIG
   echo "thread_pool_oversubscribe=128" >> $NDB_PERF_CONFIG
-  echo "log_path=blob://store-hl/hdd-01/public/" >> $NDB_PERF_CONFIG
-  echo "data_path=mock://store-hl-test/10.129.69.199/public/" >> $NDB_PERF_CONFIG
+  echo "log_path=blob://store-hl/doc_hdd_test3/public/" >> $NDB_PERF_CONFIG
+  echo "data_path=blob://store-hl/pst-normal-df-0/public/" >> $NDB_PERF_CONFIG
   INSTANCE_ID=test$(date +%s)
   echo "instance_id=$INSTANCE_ID" >> $NDB_PERF_CONFIG
   echo "log_write_parallelism=32" >> $NDB_PERF_CONFIG
@@ -229,7 +229,7 @@ function ndbperfrunwrite()
     CONCURRENCY=100
   fi
 
-  sysbench --test=tests/db/oltp.lua --mysql-table-engine=innodb --oltp_tables_count=$NDB_PERF_DEFAULT_TABLE_COUNT --mysql-db=$DBNAME --oltp-table-size=$NDB_PERF_DEFAULT_TABLE_SIZE --mysql-user=$DBUSER --mysql-password=$NDB_PERF_DEFAULT_PASSWORD --mysql-port=$DBPORT --mysql-host=$DBHOST --rand-type=uniform --num-threads=$CONCURRENCY --max-requests=0 --rand-seed=42 --max-time=$DURATION --oltp-read-only=off --report-interval=10 --forced-shutdown=3 run
+  sysbench --test=tests/db/oltp.lua --mysql-table-engine=innodb --oltp_tables_count=$NDB_PERF_DEFAULT_TABLE_COUNT --mysql-db=$DBNAME --oltp-table-size=$NDB_PERF_DEFAULT_TABLE_SIZE --mysql-user=$DBUSER --mysql-password=$NDB_PERF_DEFAULT_PASSWORD --mysql-port=$DBPORT --mysql-host=$DBHOST --rand-type=uniform --num-threads=$CONCURRENCY --max-requests=0 --rand-seed=42 --max-time=$DURATION --oltp-read-only=off --report-interval=10 --percentile=99 --forced-shutdown=3 run
 }
 
 function ndbperfrunread()
@@ -257,7 +257,7 @@ function ndbperfrunread()
     CONCURRENCY=100
   fi
 
-  sysbench --test=tests/db/oltp.lua --oltp_tables_count=$NDB_PERF_DEFAULT_TABLE_COUNT --mysql-db=$DBNAME --oltp-table-size=$NDB_PERF_DEFAULT_TABLE_SIZE --mysql-user=$DBUSER --mysql-password=$NDB_PERF_DEFAULT_PASSWORD --mysql-port=$DBPORT --mysql-host=$DBHOST --db-dirver=mysql --num-threads=$CONCURRENCY --max-requests=0 --oltp_simple_ranges=0 --oltp-distinct-ranges=0 --oltp-sum-ranges=0 --oltp-order-ranges=0 --rand-seed=42 --max-time=$DURATION --oltp-read-only=on --report-interval=10 --forced-shutdown=3 run
+  sysbench --test=tests/db/oltp.lua --oltp_tables_count=$NDB_PERF_DEFAULT_TABLE_COUNT --mysql-db=$DBNAME --oltp-table-size=$NDB_PERF_DEFAULT_TABLE_SIZE --mysql-user=$DBUSER --mysql-password=$NDB_PERF_DEFAULT_PASSWORD --mysql-port=$DBPORT --mysql-host=$DBHOST --db-dirver=mysql --num-threads=$CONCURRENCY --max-requests=0 --oltp_simple_ranges=0 --oltp-distinct-ranges=0 --oltp-sum-ranges=0 --oltp-order-ranges=0 --rand-seed=42 --max-time=$DURATION --oltp-read-only=on --report-interval=10 --percentile=99 --forced-shutdown=3 run
 }
 
 function ndbperfrunpurewrite()
@@ -285,5 +285,5 @@ function ndbperfrunpurewrite()
     CONCURRENCY=100
   fi
 
-  sysbench --test=tests/db/oltp.lua --mysql-table-engine=innodb --oltp_tables_count=$NDB_PERF_DEFAULT_TABLE_COUNT --mysql-db=$DBNAME --oltp-table-size=$NDB_PERF_DEFAULT_TABLE_SIZE --mysql-user=$DBUSER --mysql-password=$NDB_PERF_DEFAULT_PASSWORD --mysql-port=$DBPORT --mysql-host=$DBHOST --rand-type=uniform --num-threads=$CONCURRENCY --max-requests=0 --max-requests=0 --oltp_simple_ranges=0 --oltp-distinct-ranges=0 --oltp-sum-ranges=0 --oltp-order-ranges=0 --oltp-point-selects=0 --rand-seed=42 --max-time=$DURATION --oltp-read-only=off --report-interval=10 --forced-shutdown=3 run
+  sysbench --test=tests/db/oltp.lua --mysql-table-engine=innodb --oltp_tables_count=$NDB_PERF_DEFAULT_TABLE_COUNT --mysql-db=$DBNAME --oltp-table-size=$NDB_PERF_DEFAULT_TABLE_SIZE --mysql-user=$DBUSER --mysql-password=$NDB_PERF_DEFAULT_PASSWORD --mysql-port=$DBPORT --mysql-host=$DBHOST --rand-type=uniform --num-threads=$CONCURRENCY --max-requests=0 --max-requests=0 --oltp_simple_ranges=0 --oltp-distinct-ranges=0 --oltp-sum-ranges=0 --oltp-order-ranges=0 --oltp-point-selects=0 --rand-seed=42 --max-time=$DURATION --oltp-read-only=off --report-interval=10 --percentile=99 --forced-shutdown=3 run
 }
