@@ -1,7 +1,7 @@
 NDB_PERF_BASEDIR=$HOME/mysql
 NDB_PERF_CONFIG=$HOME/ndb.cnf
 NDB_PERF_DEFAULT_TABLE_COUNT=64
-NDB_PERF_DEFAULT_TABLE_SIZE=100000000
+NDB_PERF_DEFAULT_TABLE_SIZE=10000000
 NDB_PERF_DEFAULT_PASSWORD=TAKE0one
 
 function ndbperfstart()
@@ -124,8 +124,6 @@ function ndbperfinit()
   sed -i '/performance_schema/d' $NDB_PERF_CONFIG
   sed -i '/thread_handling/d' $NDB_PERF_CONFIG
   sed -i '/innodb_log_file_size/d' $NDB_PERF_CONFIG
-  sed -i '/innodb_io_capacity_max/d' $NDB_PERF_CONFIG
-  sed -i '/innodb_io_capacity/d' $NDB_PERF_CONFIG
   echo "default-time-zone='+8:00'" >> $NDB_PERF_CONFIG
   echo "log-bin=mysql-bin" >> $NDB_PERF_CONFIG
   echo "sync_binlog=1" >> $NDB_PERF_CONFIG
@@ -143,8 +141,6 @@ function ndbperfinit()
   mkdir -p $NDB_TMPDIR
   echo "tmpdir=$NDB_TMPDIR" >> $NDB_PERF_CONFIG
   echo "innodb_data_file_path=ibdata1:512M:autoextend" >> $NDB_PERF_CONFIG
-  echo "innodb_io_capacity=6000" >> $NDB_PERF_CONFIG
-  echo "innodb_io_capacity_max=10000" >> $NDB_PERF_CONFIG
   echo "innodb_file_per_table=1" >> $NDB_PERF_CONFIG
   echo "innodb_buffer_pool_size=128G" >> $NDB_PERF_CONFIG
   echo "innodb_log_writer_group_commit_timeout=500" >> $NDB_PERF_CONFIG

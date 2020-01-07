@@ -327,8 +327,6 @@ function mysqlinit()
   sed -i '/performance_schema/d' $MYSQL_CONFIG
   sed -i '/thread_handling/d' $MYSQL_CONFIG
   sed -i '/innodb_log_file_size/d' $MYSQL_CONFIG
-  sed -i '/innodb_io_capacity_max/d' $MYSQL_CONFIG
-  sed -i '/innodb_io_capacity/d' $MYSQL_CONFIG
   echo "default-time-zone='+8:00'" >> $MYSQL_CONFIG
   echo "log-bin=mysql-bin" >> $MYSQL_CONFIG
   echo "sync_binlog=1" >> $MYSQL_CONFIG
@@ -350,8 +348,6 @@ function mysqlinit()
   echo "innodb_log_group_home_dir=$MYSQL_LOGDIR" >> $MYSQL_CONFIG
   echo "innodb_log_file_size=512M" >> $MYSQL_CONFIG
   echo "innodb_data_file_path=ibdata1:512M:autoextend" >> $MYSQL_CONFIG
-  echo "innodb_io_capacity=6000" >> $MYSQL_CONFIG
-  echo "innodb_io_capacity_max=10000" >> $MYSQL_CONFIG
   echo "innodb_file_per_table=1" >> $MYSQL_CONFIG
   echo "innodb_buffer_pool_size=1G" >> $MYSQL_CONFIG
   echo "bind-address=0.0.0.0" >> $MYSQL_CONFIG
@@ -444,8 +440,6 @@ function mysqlinitmasterslave()
   sed -i '/performance_schema/d' $MASTER_CONFIG
   sed -i '/thread_handling/d' $MASTER_CONFIG
   sed -i '/innodb_log_file_size/d' $MASTER_CONFIG
-  sed -i '/innodb_io_capacity_max/d' $MASTER_CONFIG
-  sed -i '/innodb_io_capacity/d' $MASTER_CONFIG
   echo "default-time-zone='+8:00'" >> $MASTER_CONFIG
   echo "log-bin=mysql-bin" >> $MASTER_CONFIG
   echo "sync_binlog=1" >> $MASTER_CONFIG
@@ -463,8 +457,6 @@ function mysqlinitmasterslave()
   echo "innodb_log_group_home_dir=$MASTER_LOGDIR" >> $MASTER_CONFIG
   echo "innodb_log_file_size=1G" >> $MASTER_CONFIG
   echo "innodb_data_file_path=ibdata1:2G:autoextend" >> $MASTER_CONFIG
-  echo "innodb_io_capacity=6000" >> $MASTER_CONFIG
-  echo "innodb_io_capacity_max=10000" >> $MASTER_CONFIG
   echo "innodb_file_per_table=1" >> $MASTER_CONFIG
   echo "innodb_buffer_pool_size=64G" >> $MASTER_CONFIG
   echo "bind-address=0.0.0.0" >> $MASTER_CONFIG
@@ -486,8 +478,6 @@ function mysqlinitmasterslave()
   sed -i '/performance_schema/d' $SLAVE_CONFIG
   sed -i '/thread_handling/d' $SLAVE_CONFIG
   sed -i '/innodb_log_file_size/d' $SLAVE_CONFIG
-  sed -i '/innodb_io_capacity_max/d' $SLAVE_CONFIG
-  sed -i '/innodb_io_capacity/d' $SLAVE_CONFIG
   echo "default-time-zone='+8:00'" >> $SLAVE_CONFIG
   echo "log-bin=mysql-bin" >> $SLAVE_CONFIG
   echo "sync_binlog=1" >> $SLAVE_CONFIG
@@ -505,8 +495,6 @@ function mysqlinitmasterslave()
   echo "innodb_log_group_home_dir=$SLAVE_LOGDIR" >> $SLAVE_CONFIG
   echo "innodb_log_file_size=1G" >> $SLAVE_CONFIG
   echo "innodb_data_file_path=ibdata1:2G:autoextend" >> $SLAVE_CONFIG
-  echo "innodb_io_capacity=6000" >> $SLAVE_CONFIG
-  echo "innodb_io_capacity_max=10000" >> $SLAVE_CONFIG
   echo "innodb_file_per_table=1" >> $SLAVE_CONFIG
   echo "innodb_buffer_pool_size=64G" >> $SLAVE_CONFIG
   echo "bind-address=0.0.0.0" >> $SLAVE_CONFIG

@@ -192,8 +192,6 @@ function ndbinit()
   sed -i '/performance_schema/d' $NDB_CONFIG
   sed -i '/thread_handling/d' $NDB_CONFIG
   sed -i '/innodb_log_file_size/d' $NDB_CONFIG
-  sed -i '/innodb_io_capacity_max/d' $NDB_CONFIG
-  sed -i '/innodb_io_capacity/d' $NDB_CONFIG
   echo "default-time-zone='+8:00'" >> $NDB_CONFIG
   echo "log-bin=mysql-bin" >> $NDB_CONFIG
   echo "sync_binlog=1" >> $NDB_CONFIG
@@ -209,8 +207,6 @@ function ndbinit()
   # Disable binlog for ByteNDB
   echo "disable_log_bin" >> $NDB_CONFIG
   echo "innodb_data_file_path=ibdata1:512M:autoextend" >> $NDB_CONFIG
-  echo "innodb_io_capacity=6000" >> $NDB_CONFIG
-  echo "innodb_io_capacity_max=10000" >> $NDB_CONFIG
   echo "innodb_file_per_table=1" >> $NDB_CONFIG
   echo "innodb_buffer_pool_size=1G" >> $NDB_CONFIG
   echo "loose-innodb_mock_server_host=localhost:8080" >> $NDB_CONFIG
@@ -286,8 +282,6 @@ function ndbinitprimaryreplica()
   sed -i '/performance_schema/d' $NDB_PRIMARY_CONFIG
   sed -i '/thread_handling/d' $NDB_PRIMARY_CONFIG
   sed -i '/innodb_log_file_size/d' $NDB_PRIMARY_CONFIG
-  sed -i '/innodb_io_capacity_max/d' $NDB_PRIMARY_CONFIG
-  sed -i '/innodb_io_capacity/d' $NDB_PRIMARY_CONFIG
   echo "default-time-zone='+8:00'" >> $NDB_PRIMARY_CONFIG
   echo "log-bin=mysql-bin" >> $NDB_PRIMARY_CONFIG
   echo "sync_binlog=1" >> $NDB_PRIMARY_CONFIG
@@ -303,8 +297,6 @@ function ndbinitprimaryreplica()
   # Disable binlog for ByteNDB
   echo "disable_log_bin" >> $NDB_PRIMARY_CONFIG
   echo "innodb_data_file_path=ibdata1:512M:autoextend" >> $NDB_PRIMARY_CONFIG
-  echo "innodb_io_capacity=6000" >> $NDB_PRIMARY_CONFIG
-  echo "innodb_io_capacity_max=10000" >> $NDB_PRIMARY_CONFIG
   echo "innodb_file_per_table=1" >> $NDB_PRIMARY_CONFIG
   echo "innodb_buffer_pool_size=1G" >> $NDB_PRIMARY_CONFIG
   echo "loose-innodb_mock_server_host=localhost:8080" >> $NDB_PRIMARY_CONFIG
@@ -338,8 +330,6 @@ function ndbinitprimaryreplica()
   sed -i '/performance_schema/d' $NDB_REPLICA_CONFIG
   sed -i '/thread_handling/d' $NDB_REPLICA_CONFIG
   sed -i '/innodb_log_file_size/d' $NDB_REPLICA_CONFIG
-  sed -i '/innodb_io_capacity_max/d' $NDB_REPLICA_CONFIG
-  sed -i '/innodb_io_capacity/d' $NDB_REPLICA_CONFIG
   echo "default-time-zone='+8:00'" >> $NDB_REPLICA_CONFIG
   echo "log-bin=mysql-bin" >> $NDB_REPLICA_CONFIG
   echo "sync_binlog=1" >> $NDB_REPLICA_CONFIG
@@ -356,8 +346,6 @@ function ndbinitprimaryreplica()
   echo "disable_log_bin" >> $NDB_REPLICA_CONFIG
   echo "replica-mode=on" >> $NDB_REPLICA_CONFIG
   echo "innodb_data_file_path=ibdata1:512M:autoextend" >> $NDB_REPLICA_CONFIG
-  echo "innodb_io_capacity=6000" >> $NDB_REPLICA_CONFIG
-  echo "innodb_io_capacity_max=10000" >> $NDB_REPLICA_CONFIG
   echo "innodb_file_per_table=1" >> $NDB_REPLICA_CONFIG
   echo "innodb_buffer_pool_size=1G" >> $NDB_REPLICA_CONFIG
   echo "loose-innodb_mock_server_host=localhost:8080" >> $NDB_REPLICA_CONFIG
@@ -559,8 +547,6 @@ function ndbinitmulti()
   sed -i '/performance_schema/d' $PRIMARY_CONFIG
   sed -i '/thread_handling/d' $PRIMARY_CONFIG
   sed -i '/innodb_log_file_size/d' $PRIMARY_CONFIG
-  sed -i '/innodb_io_capacity_max/d' $PRIMARY_CONFIG
-  sed -i '/innodb_io_capacity/d' $PRIMARY_CONFIG
   echo "default-time-zone='+8:00'" >> $PRIMARY_CONFIG
   echo "log-bin=mysql-bin" >> $PRIMARY_CONFIG
   echo "sync_binlog=1" >> $PRIMARY_CONFIG
@@ -576,8 +562,6 @@ function ndbinitmulti()
   # Disable binlog for ByteNDB
   echo "disable_log_bin" >> $PRIMARY_CONFIG
   echo "innodb_data_file_path=ibdata1:512M:autoextend" >> $PRIMARY_CONFIG
-  echo "innodb_io_capacity=6000" >> $PRIMARY_CONFIG
-  echo "innodb_io_capacity_max=10000" >> $PRIMARY_CONFIG
   echo "innodb_file_per_table=1" >> $PRIMARY_CONFIG
   echo "innodb_buffer_pool_size=1G" >> $PRIMARY_CONFIG
   echo "loose-innodb_mock_server_host=localhost:8080" >> $PRIMARY_CONFIG
@@ -631,8 +615,6 @@ function ndbinitmulti()
     sed -i '/performance_schema/d' $REPLICA_CONFIG
     sed -i '/thread_handling/d' $REPLICA_CONFIG
     sed -i '/innodb_log_file_size/d' $REPLICA_CONFIG
-    sed -i '/innodb_io_capacity_max/d' $REPLICA_CONFIG
-    sed -i '/innodb_io_capacity/d' $REPLICA_CONFIG
     echo "default-time-zone='+8:00'" >> $REPLICA_CONFIG
     echo "log-bin=mysql-bin" >> $REPLICA_CONFIG
     echo "sync_binlog=1" >> $REPLICA_CONFIG
@@ -649,8 +631,6 @@ function ndbinitmulti()
     echo "disable_log_bin" >> $REPLICA_CONFIG
     echo "replica-mode=on" >> $REPLICA_CONFIG
     echo "innodb_data_file_path=ibdata1:512M:autoextend" >> $REPLICA_CONFIG
-    echo "innodb_io_capacity=6000" >> $REPLICA_CONFIG
-    echo "innodb_io_capacity_max=10000" >> $REPLICA_CONFIG
     echo "innodb_file_per_table=1" >> $REPLICA_CONFIG
     echo "innodb_buffer_pool_size=1G" >> $REPLICA_CONFIG
     echo "loose-innodb_mock_server_host=localhost:8080" >> $REPLICA_CONFIG
