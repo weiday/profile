@@ -438,6 +438,25 @@ function ndbattachreplica()
   fi
 }
 
+function ndbsingleprepare()
+{
+  if [ -z "$(cat /etc/issue | grep SUSE)" ]; then
+    LOCALIP=$(hostname -I | awk '{print $1}')
+  else
+    LOCALIP=$(hostname -i | awk '{print $1}')
+  fi
+
+  DBNAME=test
+  DBUSER=root
+  DBPORT=3600
+  DBHOST=$1
+  if [ -z $DBHOST ]; then
+    DBHOST=$LOCALIP
+  fi
+
+  sysbench --test=tests/db/oltp.lua --oltp_tables_count=$NDB_DEFAULT_TABLE_COUNT --mysql-db=$DBNAME --oltp-table-size=$NDB_DEFAULT_TABLE_SIZE --mysql-user=$DBUSER --mysql-password=$NDB_DEFAULT_PASSWORD --mysql-port=$DBPORT --mysql-host=$DBHOST --num-threads=$NDB_DEFAULT_TABLE_COUNT --report-interval=10 prepare
+}
+
 function ndbprepare()
 {
   if [ -z "$(cat /etc/issue | grep SUSE)" ]; then
