@@ -5,6 +5,20 @@ NDB_REPLICA_CONFIG=$HOME/ndb_replica.cnf
 NDB_DEFAULT_TABLE_COUNT=250
 NDB_DEFAULT_TABLE_SIZE=25000
 NDB_DEFAULT_PASSWORD=TAKE0one
+# HDD
+NDB_LOG_PATH_1=blob://store-hl/hdd-01/public/
+# HDD, LQ, 6 nodes
+NDB_LOG_PATH_2=blob://store-hl/doc_hdd_test3/public/
+# NVME SSD, HL-SY, 3 nodes
+NDB_LOG_PATH_3=blob://store-hl/ndb_test_2/public/
+# NVME SSD, 6 nodes
+NDB_DATA_PATH_1=blob://store-hl/pst-normal-df-0/public/
+# NVME SSD, 10 nodes
+NDB_DATA_PATH_2=blob://store-hl/pst-normal-nvme-0/public/
+# SATA SSD, 3 nodes
+NDB_DATA_PATH_3=blob://store-hl/store-pst-test2/public/
+# NVME SSD, HL-SY, 10 nodes
+NDB_DATA_PATH_4=blob://store-hl/pst-normal-nvme-1/public/
 
 function ndbstart()
 {
@@ -52,7 +66,21 @@ function ndbstart()
 
 function ndbstartprimaryreplica()
 {
-  PRIMARY_DATADIR=$(cat $CMDDIR/primary.cfg | awk '{print $1}')
+  P
+  # HDD
+  NDB_LOG_PATH_1=blob://store-hl/hdd-01/public/
+  # HDD, LQ, 6 nodes
+  NDB_LOG_PATH_2=blob://store-hl/doc_hdd_test3/public/
+  # NVME SSD, HL-SY, 3 nodes
+  NDB_LOG_PATH_3=blob://store-hl/ndb_test_2/public/
+  # NVME SSD, 6 nodes
+  NDB_DATA_PATH_1=blob://store-hl/pst-normal-df-0/public/
+  # NVME SSD, 10 nodes
+  NDB_DATA_PATH_2=blob://store-hl/pst-normal-nvme-0/public/
+  # SATA SSD, 3 nodes
+  NDB_DATA_PATH_3=blob://store-hl/store-pst-test2/public/
+  # NVME SSD, HL-SY, 10 nodes
+  NDB_DATA_PATH_4=blob://store-hl/pst-normal-nvme-1/public/RIMARY_DATADIR=$(cat $CMDDIR/primary.cfg | awk '{print $1}')
   if [ ! -d $PRIMARY_DATADIR/mysql ]; then
     echo "Primary data directory $PRIMARY_DATADIR is not initialized yet"
     return
@@ -210,8 +238,8 @@ function ndbinit()
   echo "innodb_file_per_table=1" >> $NDB_CONFIG
   echo "innodb_buffer_pool_size=1G" >> $NDB_CONFIG
   echo "loose-innodb_mock_server_host=localhost:8080" >> $NDB_CONFIG
-  echo "log_path=blob://store-hl/hdd-01/public/" >> $NDB_CONFIG
-  echo "data_path=blob://store-hl-test/pst-normal-df-0/public/" >> $NDB_CONFIG
+  echo "log_path=$NDB_LOG_PATH_2" >> $NDB_CONFIG
+  echo "data_path=$NDB_DATA_PATH_2" >> $NDB_CONFIG
   INSTANCE_ID=test$(date +%s)
   echo "instance_id=$INSTANCE_ID" >> $NDB_CONFIG
   rm -rf /tmp/$INSTANCE_ID
@@ -300,8 +328,8 @@ function ndbinitprimaryreplica()
   echo "innodb_file_per_table=1" >> $NDB_PRIMARY_CONFIG
   echo "innodb_buffer_pool_size=1G" >> $NDB_PRIMARY_CONFIG
   echo "loose-innodb_mock_server_host=localhost:8080" >> $NDB_PRIMARY_CONFIG
-  echo "log_path=blob://store-hl/hdd-01/public/" >> $NDB_PRIMARY_CONFIG
-  echo "data_path=blob://store-hl-test/pst-normal-df-0/public/" >> $NDB_PRIMARY_CONFIG
+  echo "log_path=$NDB_LOG_PATH_2" >> $NDB_PRIMARY_CONFIG
+  echo "data_path=$NDB_DATA_PATH_2" >> $NDB_PRIMARY_CONFIG
   INSTANCE_ID=test$(date +%s)
   echo "instance_id=$INSTANCE_ID" >> $NDB_PRIMARY_CONFIG
   rm -rf /tmp/$INSTANCE_ID
@@ -349,8 +377,8 @@ function ndbinitprimaryreplica()
   echo "innodb_file_per_table=1" >> $NDB_REPLICA_CONFIG
   echo "innodb_buffer_pool_size=1G" >> $NDB_REPLICA_CONFIG
   echo "loose-innodb_mock_server_host=localhost:8080" >> $NDB_REPLICA_CONFIG
-  echo "log_path=blob://store-hl/hdd-01/public/" >> $NDB_REPLICA_CONFIG
-  echo "data_path=blob://store-hl-test/pst-normal-df-0/public/" >> $NDB_REPLICA_CONFIG
+  echo "log_path=$NDB_LOG_PATH_2" >> $NDB_REPLICA_CONFIG
+  echo "data_path=$NDB_DATA_PATH_2" >> $NDB_REPLICA_CONFIG
   echo "instance_id=$INSTANCE_ID" >> $NDB_REPLICA_CONFIG
   mkdir -p /tmp/$INSTANCE_ID/2/lst_log
   echo "log_lst_log_level=info" >> $NDB_REPLICA_CONFIG
@@ -565,8 +593,8 @@ function ndbinitmulti()
   echo "innodb_file_per_table=1" >> $PRIMARY_CONFIG
   echo "innodb_buffer_pool_size=1G" >> $PRIMARY_CONFIG
   echo "loose-innodb_mock_server_host=localhost:8080" >> $PRIMARY_CONFIG
-  echo "log_path=blob://store-hl/hdd-01/public/" >> $PRIMARY_CONFIG
-  echo "data_path=blob://store-hl-test/pst-normal-df-0/public/" >> $PRIMARY_CONFIG
+  echo "log_path=$NDB_LOG_PATH_2" >> $PRIMARY_CONFIG
+  echo "data_path=$NDB_DATA_PATH_2" >> $PRIMARY_CONFIG
   INSTANCE_ID=test$(date +%s)
   echo "instance_id=$INSTANCE_ID" >> $PRIMARY_CONFIG
   rm -rf /tmp/$INSTANCE_ID
@@ -634,8 +662,8 @@ function ndbinitmulti()
     echo "innodb_file_per_table=1" >> $REPLICA_CONFIG
     echo "innodb_buffer_pool_size=1G" >> $REPLICA_CONFIG
     echo "loose-innodb_mock_server_host=localhost:8080" >> $REPLICA_CONFIG
-    echo "log_path=blob://store-hl/hdd-01/public/" >> $REPLICA_CONFIG
-    echo "data_path=blob://store-hl-test/pst-normal-df-0/public/" >> $REPLICA_CONFIG
+    echo "log_path=$NDB_LOG_PATH_2" >> $REPLICA_CONFIG
+    echo "data_path=$NDB_DATA_PATH_2" >> $REPLICA_CONFIG
     echo "instance_id=$INSTANCE_ID" >> $REPLICA_CONFIG
     mkdir -p /tmp/$INSTANCE_ID/${i}/lst_log
     echo "log_lst_log_level=info" >> $REPLICA_CONFIG
