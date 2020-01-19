@@ -66,21 +66,7 @@ function ndbstart()
 
 function ndbstartprimaryreplica()
 {
-  P
-  # HDD
-  NDB_LOG_PATH_1=blob://store-hl/hdd-01/public/
-  # HDD, LQ, 6 nodes
-  NDB_LOG_PATH_2=blob://store-hl/doc_hdd_test3/public/
-  # NVME SSD, HL-SY, 3 nodes
-  NDB_LOG_PATH_3=blob://store-hl/ndb_test_2/public/
-  # NVME SSD, 6 nodes
-  NDB_DATA_PATH_1=blob://store-hl/pst-normal-df-0/public/
-  # NVME SSD, 10 nodes
-  NDB_DATA_PATH_2=blob://store-hl/pst-normal-nvme-0/public/
-  # SATA SSD, 3 nodes
-  NDB_DATA_PATH_3=blob://store-hl/store-pst-test2/public/
-  # NVME SSD, HL-SY, 10 nodes
-  NDB_DATA_PATH_4=blob://store-hl/pst-normal-nvme-1/public/RIMARY_DATADIR=$(cat $CMDDIR/primary.cfg | awk '{print $1}')
+  PRIMARY_DATADIR=$(cat $CMDDIR/primary.cfg | awk '{print $1}')
   if [ ! -d $PRIMARY_DATADIR/mysql ]; then
     echo "Primary data directory $PRIMARY_DATADIR is not initialized yet"
     return
