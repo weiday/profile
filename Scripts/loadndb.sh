@@ -236,12 +236,12 @@ function ndbinit()
   echo "instance_id=$INSTANCE_ID" >> $NDB_CONFIG
   echo "log_write_parallelism=32" >> $NDB_CONFIG
   mkdir -p $NDB_LOGDIR
-  mkdir -p /$NDB_LOGDIR/$INSTANCE_ID/1/lst_log
+  mkdir -p $NDB_LOGDIR/$INSTANCE_ID/1/lst_log
   echo "log_lst_log_level=info" >> $NDB_CONFIG
-  echo "log_lst_log_dir=/$NDB_LOGDIR/$INSTANCE_ID/1/lst_log" >> $NDB_CONFIG
-  mkdir -p /$NDB_LOGDIR/$INSTANCE_ID/1/pst_log
+  echo "log_lst_log_dir=$NDB_LOGDIR/$INSTANCE_ID/1/lst_log" >> $NDB_CONFIG
+  mkdir -p $NDB_LOGDIR/$INSTANCE_ID/1/pst_log
   echo "log_pst_log_level=info" >> $NDB_CONFIG
-  echo "log_pst_log_dir=/$NDB_LOGDIR/$INSTANCE_ID/1/pst_log" >> $NDB_CONFIG
+  echo "log_pst_log_dir=$NDB_LOGDIR/$INSTANCE_ID/1/pst_log" >> $NDB_CONFIG
   echo "bind-address=0.0.0.0" >> $NDB_CONFIG
   #echo "skip-grant-tables" >> $NDB_CONFIG
   echo "port=$PORT" >> $NDB_CONFIG
@@ -333,12 +333,12 @@ function ndbinitprimaryreplica()
   echo "instance_id=$INSTANCE_ID" >> $NDB_PRIMARY_CONFIG
   echo "log_write_parallelism=32" >> $NDB_PRIMARY_CONFIG
   mkdir -p $NDB_LOGDIR
-  mkdir -p /$NDB_LOGDIR/$INSTANCE_ID/1/lst_log
+  mkdir -p $NDB_LOGDIR/$INSTANCE_ID/1/lst_log
   echo "log_lst_log_level=info" >> $NDB_PRIMARY_CONFIG
-  echo "log_lst_log_dir=/$NDB_LOGDIR/$INSTANCE_ID/1/lst_log" >> $NDB_PRIMARY_CONFIG
-  mkdir -p /$NDB_LOGDIR/$INSTANCE_ID/1/pst_log
+  echo "log_lst_log_dir=$NDB_LOGDIR/$INSTANCE_ID/1/lst_log" >> $NDB_PRIMARY_CONFIG
+  mkdir -p $NDB_LOGDIR/$INSTANCE_ID/1/pst_log
   echo "log_pst_log_level=info" >> $NDB_PRIMARY_CONFIG
-  echo "log_pst_log_dir=/$NDB_LOGDIR/$INSTANCE_ID/1/pst_log" >> $NDB_PRIMARY_CONFIG
+  echo "log_pst_log_dir=$NDB_LOGDIR/$INSTANCE_ID/1/pst_log" >> $NDB_PRIMARY_CONFIG
   echo "bind-address=0.0.0.0" >> $NDB_PRIMARY_CONFIG
   echo "port=$PORT" >> $NDB_PRIMARY_CONFIG
   echo "socket=/tmp/ndb.socket.$USER.primary" >> $NDB_PRIMARY_CONFIG
@@ -381,12 +381,12 @@ function ndbinitprimaryreplica()
   echo "log_path=$NDB_LOG_PATH_2" >> $NDB_REPLICA_CONFIG
   echo "data_path=$NDB_DATA_PATH_2" >> $NDB_REPLICA_CONFIG
   echo "instance_id=$INSTANCE_ID" >> $NDB_REPLICA_CONFIG
-  mkdir -p /$NDB_LOGDIR/$INSTANCE_ID/2/lst_log
+  mkdir -p $NDB_LOGDIR/$INSTANCE_ID/2/lst_log
   echo "log_lst_log_level=info" >> $NDB_REPLICA_CONFIG
-  echo "log_lst_log_dir=/$NDB_LOGDIR/$INSTANCE_ID/2/lst_log" >> $NDB_REPLICA_CONFIG
-  mkdir -p /$NDB_LOGDIR/$INSTANCE_ID/2/pst_log
+  echo "log_lst_log_dir=$NDB_LOGDIR/$INSTANCE_ID/2/lst_log" >> $NDB_REPLICA_CONFIG
+  mkdir -p $NDB_LOGDIR/$INSTANCE_ID/2/pst_log
   echo "log_pst_log_level=info" >> $NDB_REPLICA_CONFIG
-  echo "log_pst_log_dir=/$NDB_LOGDIR/$INSTANCE_ID/2/pst_log" >> $NDB_REPLICA_CONFIG
+  echo "log_pst_log_dir=$NDB_LOGDIR/$INSTANCE_ID/2/pst_log" >> $NDB_REPLICA_CONFIG
   echo "bind-address=0.0.0.0" >> $NDB_REPLICA_CONFIG
   echo "port=$PORT" >> $NDB_REPLICA_CONFIG
   echo "socket=/tmp/ndb.socket.$USER.replica" >> $NDB_REPLICA_CONFIG
@@ -626,12 +626,12 @@ function ndbinitmulti()
   echo "instance_id=$INSTANCE_ID" >> $PRIMARY_CONFIG
   echo "log_write_parallelism=32" >> $PRIMARY_CONFIG
   mkdir -p $NDB_LOGDIR
-  mkdir -p /$NDB_LOGDIR/$INSTANCE_ID/0/lst_log
+  mkdir -p $NDB_LOGDIR/$INSTANCE_ID/0/lst_log
   echo "log_lst_log_level=info" >> $PRIMARY_CONFIG
-  echo "log_lst_log_dir=/$NDB_LOGDIR/$INSTANCE_ID/0/lst_log" >> $PRIMARY_CONFIG
-  mkdir -p /$NDB_LOGDIR/$INSTANCE_ID/0/pst_log
+  echo "log_lst_log_dir=$NDB_LOGDIR/$INSTANCE_ID/0/lst_log" >> $PRIMARY_CONFIG
+  mkdir -p $NDB_LOGDIR/$INSTANCE_ID/0/pst_log
   echo "log_pst_log_level=info" >> $PRIMARY_CONFIG
-  echo "log_pst_log_dir=/$NDB_LOGDIR/$INSTANCE_ID/0/pst_log" >> $PRIMARY_CONFIG
+  echo "log_pst_log_dir=$NDB_LOGDIR/$INSTANCE_ID/0/pst_log" >> $PRIMARY_CONFIG
   echo "bind-address=0.0.0.0" >> $PRIMARY_CONFIG
   echo "port=$PORT" >> $PRIMARY_CONFIG
   echo "socket=/tmp/ndb.socket.$USER.0" >> $PRIMARY_CONFIG
@@ -694,12 +694,12 @@ function ndbinitmulti()
     echo "log_path=$NDB_LOG_PATH_2" >> $REPLICA_CONFIG
     echo "data_path=$NDB_DATA_PATH_2" >> $REPLICA_CONFIG
     echo "instance_id=$INSTANCE_ID" >> $REPLICA_CONFIG
-    mkdir -p /$NDB_LOGDIR/$INSTANCE_ID/${i}/lst_log
+    mkdir -p $NDB_LOGDIR/$INSTANCE_ID/${i}/lst_log
     echo "log_lst_log_level=info" >> $REPLICA_CONFIG
-    echo "log_lst_log_dir=/$NDB_LOGDIR/$INSTANCE_ID/${i}/lst_log" >> $REPLICA_CONFIG
-    mkdir -p /$NDB_LOGDIR/$INSTANCE_ID/${i}/pst_log
+    echo "log_lst_log_dir=$NDB_LOGDIR/$INSTANCE_ID/${i}/lst_log" >> $REPLICA_CONFIG
+    mkdir -p $NDB_LOGDIR/$INSTANCE_ID/${i}/pst_log
     echo "log_pst_log_level=info" >> $REPLICA_CONFIG
-    echo "log_pst_log_dir=/$NDB_LOGDIR/$INSTANCE_ID/${i}/pst_log" >> $REPLICA_CONFIG
+    echo "log_pst_log_dir=$NDB_LOGDIR/$INSTANCE_ID/${i}/pst_log" >> $REPLICA_CONFIG
     echo "bind-address=0.0.0.0" >> $REPLICA_CONFIG
     echo "port=$PORT" >> $REPLICA_CONFIG
     echo "socket=/tmp/ndb.socket.$USER.${i}" >> $REPLICA_CONFIG
