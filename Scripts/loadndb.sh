@@ -190,6 +190,10 @@ function ndbinit()
 
   NDB_DATADIR=$BASE_DATADIR/ndb_data
   rm -rf $NDB_DATADIR
+  NDB_TMPDIR=$BASE_DATADIR/ndb_tmp
+  rm -rf $NDB_TMPDIR
+  NDB_LOGDIR=$BASE_DATADIR/ndb_log
+  rm -rf $NDB_LOGDIR
 
   rm -f $NDB_CONFIG
   cp $CMDDIR/mysql_perf.cnf $NDB_CONFIG
@@ -220,6 +224,8 @@ function ndbinit()
   echo "binlog-checksum=NONE" >> $NDB_CONFIG
   # Disable binlog for ByteNDB
   echo "disable_log_bin" >> $NDB_CONFIG
+  mkdir -p $NDB_TMPDIR
+  echo "tmpdir=$NDB_TMPDIR" >> $NDB_CONFIG
   echo "innodb_data_file_path=ibdata1:512M:autoextend" >> $NDB_CONFIG
   echo "innodb_file_per_table=1" >> $NDB_CONFIG
   echo "innodb_buffer_pool_size=1G" >> $NDB_CONFIG
@@ -228,13 +234,14 @@ function ndbinit()
   echo "data_path=$NDB_DATA_PATH_2" >> $NDB_CONFIG
   INSTANCE_ID=test$(date +%s)
   echo "instance_id=$INSTANCE_ID" >> $NDB_CONFIG
-  rm -rf /tmp/$INSTANCE_ID
-  mkdir -p /tmp/$INSTANCE_ID/1/lst_log
+  echo "log_write_parallelism=32" >> $NDB_CONFIG
+  mkdir -p $NDB_LOGDIR
+  mkdir -p /$NDB_LOGDIR/$INSTANCE_ID/1/lst_log
   echo "log_lst_log_level=info" >> $NDB_CONFIG
-  echo "log_lst_log_dir=/tmp/$INSTANCE_ID/1/lst_log" >> $NDB_CONFIG
-  mkdir -p /tmp/$INSTANCE_ID/1/pst_log
+  echo "log_lst_log_dir=/$NDB_LOGDIR/$INSTANCE_ID/1/lst_log" >> $NDB_CONFIG
+  mkdir -p /$NDB_LOGDIR/$INSTANCE_ID/1/pst_log
   echo "log_pst_log_level=info" >> $NDB_CONFIG
-  echo "log_pst_log_dir=/tmp/$INSTANCE_ID/1/pst_log" >> $NDB_CONFIG
+  echo "log_pst_log_dir=/$NDB_LOGDIR/$INSTANCE_ID/1/pst_log" >> $NDB_CONFIG
   echo "bind-address=0.0.0.0" >> $NDB_CONFIG
   #echo "skip-grant-tables" >> $NDB_CONFIG
   echo "port=$PORT" >> $NDB_CONFIG
@@ -278,6 +285,10 @@ function ndbinitprimaryreplica()
   rm -rf $PRIMARY_DATADIR
   REPLICA_DATADIR=$BASE_DATADIR/replica_data
   rm -rf $REPLICA_DATADIR
+  NDB_TMPDIR=$BASE_DATADIR/ndb_tmp
+  rm -rf $NDB_TMPDIR
+  NDB_LOGDIR=$BASE_DATADIR/ndb_log
+  rm -rf $NDB_LOGDIR
 
   rm -f $NDB_PRIMARY_CONFIG
   cp $CMDDIR/mysql_perf.cnf $NDB_PRIMARY_CONFIG
@@ -310,6 +321,8 @@ function ndbinitprimaryreplica()
   echo "binlog-checksum=NONE" >> $NDB_PRIMARY_CONFIG
   # Disable binlog for ByteNDB
   echo "disable_log_bin" >> $NDB_PRIMARY_CONFIG
+  mkdir -p $NDB_TMPDIR
+  echo "tmpdir=$NDB_TMPDIR" >> $NDB_PRIMARY_CONFIG
   echo "innodb_data_file_path=ibdata1:512M:autoextend" >> $NDB_PRIMARY_CONFIG
   echo "innodb_file_per_table=1" >> $NDB_PRIMARY_CONFIG
   echo "innodb_buffer_pool_size=1G" >> $NDB_PRIMARY_CONFIG
@@ -318,13 +331,14 @@ function ndbinitprimaryreplica()
   echo "data_path=$NDB_DATA_PATH_2" >> $NDB_PRIMARY_CONFIG
   INSTANCE_ID=test$(date +%s)
   echo "instance_id=$INSTANCE_ID" >> $NDB_PRIMARY_CONFIG
-  rm -rf /tmp/$INSTANCE_ID
-  mkdir -p /tmp/$INSTANCE_ID/1/lst_log
+  echo "log_write_parallelism=32" >> $NDB_PRIMARY_CONFIG
+  mkdir -p $NDB_LOGDIR
+  mkdir -p /$NDB_LOGDIR/$INSTANCE_ID/1/lst_log
   echo "log_lst_log_level=info" >> $NDB_PRIMARY_CONFIG
-  echo "log_lst_log_dir=/tmp/$INSTANCE_ID/1/lst_log" >> $NDB_PRIMARY_CONFIG
-  mkdir -p /tmp/$INSTANCE_ID/1/pst_log
+  echo "log_lst_log_dir=/$NDB_LOGDIR/$INSTANCE_ID/1/lst_log" >> $NDB_PRIMARY_CONFIG
+  mkdir -p /$NDB_LOGDIR/$INSTANCE_ID/1/pst_log
   echo "log_pst_log_level=info" >> $NDB_PRIMARY_CONFIG
-  echo "log_pst_log_dir=/tmp/$INSTANCE_ID/1/pst_log" >> $NDB_PRIMARY_CONFIG
+  echo "log_pst_log_dir=/$NDB_LOGDIR/$INSTANCE_ID/1/pst_log" >> $NDB_PRIMARY_CONFIG
   echo "bind-address=0.0.0.0" >> $NDB_PRIMARY_CONFIG
   echo "port=$PORT" >> $NDB_PRIMARY_CONFIG
   echo "socket=/tmp/ndb.socket.$USER.primary" >> $NDB_PRIMARY_CONFIG
@@ -358,6 +372,7 @@ function ndbinitprimaryreplica()
   echo "binlog-checksum=NONE" >> $NDB_REPLICA_CONFIG
   # Disable binlog for ByteNDB
   echo "disable_log_bin" >> $NDB_REPLICA_CONFIG
+  echo "tmpdir=$NDB_TMPDIR" >> $NDB_REPLICA_CONFIG
   echo "replica-mode=on" >> $NDB_REPLICA_CONFIG
   echo "innodb_data_file_path=ibdata1:512M:autoextend" >> $NDB_REPLICA_CONFIG
   echo "innodb_file_per_table=1" >> $NDB_REPLICA_CONFIG
@@ -366,12 +381,12 @@ function ndbinitprimaryreplica()
   echo "log_path=$NDB_LOG_PATH_2" >> $NDB_REPLICA_CONFIG
   echo "data_path=$NDB_DATA_PATH_2" >> $NDB_REPLICA_CONFIG
   echo "instance_id=$INSTANCE_ID" >> $NDB_REPLICA_CONFIG
-  mkdir -p /tmp/$INSTANCE_ID/2/lst_log
+  mkdir -p /$NDB_LOGDIR/$INSTANCE_ID/2/lst_log
   echo "log_lst_log_level=info" >> $NDB_REPLICA_CONFIG
-  echo "log_lst_log_dir=/tmp/$INSTANCE_ID/2/lst_log" >> $NDB_REPLICA_CONFIG
-  mkdir -p /tmp/$INSTANCE_ID/2/pst_log
+  echo "log_lst_log_dir=/$NDB_LOGDIR/$INSTANCE_ID/2/lst_log" >> $NDB_REPLICA_CONFIG
+  mkdir -p /$NDB_LOGDIR/$INSTANCE_ID/2/pst_log
   echo "log_pst_log_level=info" >> $NDB_REPLICA_CONFIG
-  echo "log_pst_log_dir=/tmp/$INSTANCE_ID/2/pst_log" >> $NDB_REPLICA_CONFIG
+  echo "log_pst_log_dir=/$NDB_LOGDIR/$INSTANCE_ID/2/pst_log" >> $NDB_REPLICA_CONFIG
   echo "bind-address=0.0.0.0" >> $NDB_REPLICA_CONFIG
   echo "port=$PORT" >> $NDB_REPLICA_CONFIG
   echo "socket=/tmp/ndb.socket.$USER.replica" >> $NDB_REPLICA_CONFIG
@@ -568,6 +583,11 @@ function ndbinitmulti()
   rm -f $PRIMARY_CONFIG
   cp $CMDDIR/mysql_perf.cnf $PRIMARY_CONFIG
 
+  NDB_TMPDIR=$BASE_DATADIR/ndb_tmp
+  rm -rf $NDB_TMPDIR
+  NDB_LOGDIR=$BASE_DATADIR/ndb_log
+  rm -rf $NDB_LOGDIR
+
   PORT=3600
   if [ ! -z "$(echo $MYSQLDVER | grep 5.6)" ]; then
     sed -i '/secure-file-priv/d' $PRIMARY_CONFIG
@@ -594,6 +614,8 @@ function ndbinitmulti()
   echo "binlog-checksum=NONE" >> $PRIMARY_CONFIG
   # Disable binlog for ByteNDB
   echo "disable_log_bin" >> $PRIMARY_CONFIG
+  mkdir -p $NDB_TMPDIR
+  echo "tmpdir=$NDB_TMPDIR" >> $PRIMARY_CONFIG
   echo "innodb_data_file_path=ibdata1:512M:autoextend" >> $PRIMARY_CONFIG
   echo "innodb_file_per_table=1" >> $PRIMARY_CONFIG
   echo "innodb_buffer_pool_size=1G" >> $PRIMARY_CONFIG
@@ -602,13 +624,14 @@ function ndbinitmulti()
   echo "data_path=$NDB_DATA_PATH_2" >> $PRIMARY_CONFIG
   INSTANCE_ID=test$(date +%s)
   echo "instance_id=$INSTANCE_ID" >> $PRIMARY_CONFIG
-  rm -rf /tmp/$INSTANCE_ID
-  mkdir -p /tmp/$INSTANCE_ID/0/lst_log
+  echo "log_write_parallelism=32" >> $PRIMARY_CONFIG
+  mkdir -p $NDB_LOGDIR
+  mkdir -p /$NDB_LOGDIR/$INSTANCE_ID/0/lst_log
   echo "log_lst_log_level=info" >> $PRIMARY_CONFIG
-  echo "log_lst_log_dir=/tmp/$INSTANCE_ID/0/lst_log" >> $PRIMARY_CONFIG
-  mkdir -p /tmp/$INSTANCE_ID/0/pst_log
+  echo "log_lst_log_dir=/$NDB_LOGDIR/$INSTANCE_ID/0/lst_log" >> $PRIMARY_CONFIG
+  mkdir -p /$NDB_LOGDIR/$INSTANCE_ID/0/pst_log
   echo "log_pst_log_level=info" >> $PRIMARY_CONFIG
-  echo "log_pst_log_dir=/tmp/$INSTANCE_ID/0/pst_log" >> $PRIMARY_CONFIG
+  echo "log_pst_log_dir=/$NDB_LOGDIR/$INSTANCE_ID/0/pst_log" >> $PRIMARY_CONFIG
   echo "bind-address=0.0.0.0" >> $PRIMARY_CONFIG
   echo "port=$PORT" >> $PRIMARY_CONFIG
   echo "socket=/tmp/ndb.socket.$USER.0" >> $PRIMARY_CONFIG
@@ -662,6 +685,7 @@ function ndbinitmulti()
     echo "binlog-checksum=NONE" >> $REPLICA_CONFIG
     # Disable binlog for ByteNDB
     echo "disable_log_bin" >> $REPLICA_CONFIG
+    echo "tmpdir=$NDB_TMPDIR" >> $REPLICA_CONFIG
     echo "replica-mode=on" >> $REPLICA_CONFIG
     echo "innodb_data_file_path=ibdata1:512M:autoextend" >> $REPLICA_CONFIG
     echo "innodb_file_per_table=1" >> $REPLICA_CONFIG
@@ -670,12 +694,12 @@ function ndbinitmulti()
     echo "log_path=$NDB_LOG_PATH_2" >> $REPLICA_CONFIG
     echo "data_path=$NDB_DATA_PATH_2" >> $REPLICA_CONFIG
     echo "instance_id=$INSTANCE_ID" >> $REPLICA_CONFIG
-    mkdir -p /tmp/$INSTANCE_ID/${i}/lst_log
+    mkdir -p /$NDB_LOGDIR/$INSTANCE_ID/${i}/lst_log
     echo "log_lst_log_level=info" >> $REPLICA_CONFIG
-    echo "log_lst_log_dir=/tmp/$INSTANCE_ID/${i}/lst_log" >> $REPLICA_CONFIG
-    mkdir -p /tmp/$INSTANCE_ID/${i}/pst_log
+    echo "log_lst_log_dir=/$NDB_LOGDIR/$INSTANCE_ID/${i}/lst_log" >> $REPLICA_CONFIG
+    mkdir -p /$NDB_LOGDIR/$INSTANCE_ID/${i}/pst_log
     echo "log_pst_log_level=info" >> $REPLICA_CONFIG
-    echo "log_pst_log_dir=/tmp/$INSTANCE_ID/${i}/pst_log" >> $REPLICA_CONFIG
+    echo "log_pst_log_dir=/$NDB_LOGDIR/$INSTANCE_ID/${i}/pst_log" >> $REPLICA_CONFIG
     echo "bind-address=0.0.0.0" >> $REPLICA_CONFIG
     echo "port=$PORT" >> $REPLICA_CONFIG
     echo "socket=/tmp/ndb.socket.$USER.${i}" >> $REPLICA_CONFIG
