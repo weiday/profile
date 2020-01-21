@@ -1,6 +1,7 @@
 [mysqld]
 log-error=error.log
 log_error_verbosity=3
+log_timestamps=SYSTEM
 explicit_defaults_for_timestamp = 1
 secure-file-priv=NULL
 
