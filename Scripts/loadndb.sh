@@ -265,8 +265,7 @@ function ndbinitprimaryreplica()
   if [ -z "$NDBPROC" ]; then
     echo "ByteNDB server is not active"
   else
-    ndbstopprimary
-    ndbstopreplica
+    ndbstopprimaryreplica
   fi
 
   MYSQLDVER=$(mysqld --version)
