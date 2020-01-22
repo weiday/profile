@@ -416,10 +416,10 @@ function ndbinitprimaryreplica()
   echo "instance_id=$INSTANCE_ID" >> $NDB_REPLICA_CONFIG
   echo "log_write_parallelism=32" >> $NDB_REPLICA_CONFIG
   mkdir -p $NDB_LOGDIR/$INSTANCE_ID/2/lst_log
-  echo "log_lst_log_level=info" >> $NDB_REPLICA_CONFIG
+  echo "log_lst_log_level=debug" >> $NDB_REPLICA_CONFIG
   echo "log_lst_log_dir=$NDB_LOGDIR/$INSTANCE_ID/2/lst_log" >> $NDB_REPLICA_CONFIG
   mkdir -p $NDB_LOGDIR/$INSTANCE_ID/2/pst_log
-  echo "log_pst_log_level=info" >> $NDB_REPLICA_CONFIG
+  echo "log_pst_log_level=debug" >> $NDB_REPLICA_CONFIG
   echo "log_pst_log_dir=$NDB_LOGDIR/$INSTANCE_ID/2/pst_log" >> $NDB_REPLICA_CONFIG
   echo "bind-address=0.0.0.0" >> $NDB_REPLICA_CONFIG
   echo "port=$PORT" >> $NDB_REPLICA_CONFIG
