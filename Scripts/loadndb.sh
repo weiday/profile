@@ -92,6 +92,40 @@ function ndbstartprimaryreplica()
   mysqld --defaults-file=$NDB_REPLICA_CONFIG --datadir=$REPLICA_DATADIR --gdb > $REPLICA_DATADIR/error.log 2>&1 &
 }
 
+function ndbstartprimary()
+{
+  PRIMARY_DATADIR=$(cat $CMDDIR/primary.cfg | awk '{print $1}')
+  if [ ! -d $PRIMARY_DATADIR/mysql ]; then
+    echo "Primary data directory $PRIMARY_DATADIR is not initialized yet"
+    return
+  fi
+
+  if [ ! -f $NDB_PRIMARY_CONFIG ]; then
+    echo "Unable to find configuration file $NDB_PRIMARY_CONFIG"
+    return
+  fi
+
+  echo "Start ByteNDB primary server in normal mode"
+  mysqld --defaults-file=$NDB_PRIMARY_CONFIG --datadir=$PRIMARY_DATADIR --gdb > $PRIMARY_DATADIR/error.log 2>&1 &
+}
+
+function ndbstartreplica()
+{
+  REPLICA_DATADIR=$(cat $CMDDIR/replica.cfg | awk '{print $1}')
+  if [ ! -d $REPLICA_DATADIR/mysql ]; then
+    echo "Replica data directory $REPLICA_DATADIR is not initialized yet"
+    return
+  fi
+
+  if [ ! -f $NDB_REPLICA_CONFIG ]; then
+    echo "Unable to find configuration file $NDB_REPLICA_CONFIG"
+    return
+  fi
+
+  echo "Start ByteNDB replica server in normal mode"
+  mysqld --defaults-file=$NDB_REPLICA_CONFIG --datadir=$REPLICA_DATADIR --gdb > $REPLICA_DATADIR/error.log 2>&1 &
+}
+
 function ndbstop()
 {
   if [ ! -f $NDB_CONFIG ]; then
