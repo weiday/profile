@@ -206,6 +206,12 @@ define mysql_print_page_header
   hex_read_from_8 $page_index_id
 end
 
+define mysql_ut_align
+  set $ptr=(char*)$arg0
+  set $addr=(char*)((((unsigned long long int)$ptr)+16384-1)&~(16384-1))
+  printf "Aligned address: %p\n", $addr
+end
+
 define mysql_page_align
   set $ptr=(char*)$arg0
   set $page=(char*)(((unsigned long long int)$ptr)&~(16384-1))
