@@ -358,7 +358,7 @@ function ndbinitprimaryreplica()
   echo "tmpdir=$NDB_TMPDIR" >> $NDB_PRIMARY_CONFIG
   echo "innodb_data_file_path=ibdata1:512M:autoextend" >> $NDB_PRIMARY_CONFIG
   echo "innodb_file_per_table=1" >> $NDB_PRIMARY_CONFIG
-  echo "innodb_buffer_pool_size=1G" >> $NDB_PRIMARY_CONFIG
+  echo "innodb_buffer_pool_size=4G" >> $NDB_PRIMARY_CONFIG
   echo "loose-innodb_mock_server_host=localhost:8080" >> $NDB_PRIMARY_CONFIG
   echo "log_path=$NDB_LOG_PATH_2" >> $NDB_PRIMARY_CONFIG
   echo "data_path=$NDB_DATA_PATH_2" >> $NDB_PRIMARY_CONFIG
@@ -367,10 +367,10 @@ function ndbinitprimaryreplica()
   echo "log_write_parallelism=32" >> $NDB_PRIMARY_CONFIG
   mkdir -p $NDB_LOGDIR
   mkdir -p $NDB_LOGDIR/$INSTANCE_ID/1/lst_log
-  echo "log_lst_log_level=info" >> $NDB_PRIMARY_CONFIG
+  echo "log_lst_log_level=debug" >> $NDB_PRIMARY_CONFIG
   echo "log_lst_log_dir=$NDB_LOGDIR/$INSTANCE_ID/1/lst_log" >> $NDB_PRIMARY_CONFIG
   mkdir -p $NDB_LOGDIR/$INSTANCE_ID/1/pst_log
-  echo "log_pst_log_level=info" >> $NDB_PRIMARY_CONFIG
+  echo "log_pst_log_level=debug" >> $NDB_PRIMARY_CONFIG
   echo "log_pst_log_dir=$NDB_LOGDIR/$INSTANCE_ID/1/pst_log" >> $NDB_PRIMARY_CONFIG
   echo "bind-address=0.0.0.0" >> $NDB_PRIMARY_CONFIG
   echo "port=$PORT" >> $NDB_PRIMARY_CONFIG
@@ -409,7 +409,7 @@ function ndbinitprimaryreplica()
   echo "replica-mode=on" >> $NDB_REPLICA_CONFIG
   echo "innodb_data_file_path=ibdata1:512M:autoextend" >> $NDB_REPLICA_CONFIG
   echo "innodb_file_per_table=1" >> $NDB_REPLICA_CONFIG
-  echo "innodb_buffer_pool_size=1G" >> $NDB_REPLICA_CONFIG
+  echo "innodb_buffer_pool_size=4G" >> $NDB_REPLICA_CONFIG
   echo "loose-innodb_mock_server_host=localhost:8080" >> $NDB_REPLICA_CONFIG
   echo "log_path=$NDB_LOG_PATH_2" >> $NDB_REPLICA_CONFIG
   echo "data_path=$NDB_DATA_PATH_2" >> $NDB_REPLICA_CONFIG
