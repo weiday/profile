@@ -624,6 +624,7 @@ function ndbinitmulti()
 
   MYSQLDVER=$(mysqld --version)
 
+  BASE_DATADIR=$HOME
   NUM_REPLICAS=$1
   if [ -z $1 ]; then
     NUM_REPLICAS=0
