@@ -907,7 +907,7 @@ function ndbstopmulti()
   IFS=$' '
 }
 
-function ndbconnectmulti()
+function ndbconnectserver()
 {
   SERVER_ID=$1
   if [ -z $SERVER_ID ]; then
