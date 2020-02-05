@@ -627,7 +627,7 @@ function ndbinitmulti()
   BASE_DATADIR=$HOME
   NUM_REPLICAS=$1
   if [ -z $1 ]; then
-    NUM_REPLICAS=0
+    NUM_REPLICAS=15
   fi
 
   PRIMARY_DATADIR=$PWD/ndb_data_0
@@ -786,7 +786,7 @@ function ndbstartmulti()
 {
   NUM_REPLICAS=$1
   if [ -z $1 ]; then
-    NUM_REPLICAS=31
+    NUM_REPLICAS=15
   fi
 
   PRIMARY_CONFIG=${NDB_CONFIG}.0
@@ -829,15 +829,59 @@ function ndbstartmulti()
 
     echo "Start ByteNDB replica server ${i} in normal mode"
     mysqld --defaults-file=$REPLICA_CONFIG --datadir=$REPLICA_DATADIR --gdb > $REPLICA_DATADIR/error.log 2>&1 &
+    echo "ByteNDB replica server ${i} is starting "
+    while :
+    do
+      mysql --defaults-file=$REPLICA_CONFIG --user=root --password=$NDB_DEFAULT_PASSWORD mysql -e "select * from information_schema.innodb_tablespaces" > /dev/null 2>&1
+      if [ $? = 0 ]; then
+        echo
+        break
+      fi
+      printf "."
+      sleep 0.5
+    done
   done
   IFS=$' '
+}
+
+function ndbstartserver()
+{
+  SERVER_ID=$1
+  if [ -z $SERVER_ID ]; then
+    SERVER_ID=0
+  fi
+
+  SERVER_CONFIG=${NDB_CONFIG}.${SERVER_ID}
+  if [ ! -f ${SERVER_CONFIG} ]; then
+    echo "Unable to find configuration file ${SERVER_CONFIG}"
+    return
+  fi
+  SERVER_DATADIR=$(cat $CMDDIR/ndb.cfg.${SERVER_CONFIG} | awk '{print $1}')
+  if [ ! -d ${SERVER_DATADIR}/mysql ]; then
+    echo "Server data directory ${SERVER_DATADIR} is not initialized yet"
+    return
+  fi
+
+  echo "Start ByteNDB server ${SERVER_ID} in normal mode"
+  mysqld --defaults-file=${SERVER_CONFIG} --datadir=${SERVER_DATADIR} --gdb > ${SERVER_DATADIR}/error.log 2>&1 &
+  echo "ByteNDB server ${SERVER_ID} is starting "
+  while :
+  do
+    mysql --defaults-file=${SERVER_CONFIG} --user=root --password=$NDB_DEFAULT_PASSWORD mysql -e "select * from information_schema.innodb_tablespaces" > /dev/null 2>&1
+    if [ $? = 0 ]; then
+      echo
+      break
+    fi
+    printf "."
+    sleep 0.5
+  done
 }
 
 function ndbstopmulti()
 {
   NUM_REPLICAS=$1
   if [ -z $1 ]; then
-    NUM_REPLICAS=31
+    NUM_REPLICAS=15
   fi
 
   PRIMARY_CONFIG=${NDB_CONFIG}.0
