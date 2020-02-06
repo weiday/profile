@@ -118,7 +118,9 @@ function ndbperfinit()
   NDB_TMPDIR=$BASE_DATADIR/ndb_tmp
   rm -rf $NDB_TMPDIR
   NDB_LOGDIR=$BASE_DATADIR/ndb_log
-  rm -rf $NDB_LOGDIR
+  if [ ! -d $NDB_LOGDIR ]; then
+    mkdir -p $NDB_LOGDIR
+  fi
 
   rm -f $NDB_PERF_CONFIG
   cp $CMDDIR/mysql_perf.cnf $NDB_PERF_CONFIG
@@ -167,7 +169,6 @@ function ndbperfinit()
   echo "data_path=$NDB_PERF_DATA_PATH_4" >> $NDB_PERF_CONFIG
   echo "instance_id=$INSTANCE_ID" >> $NDB_PERF_CONFIG
   echo "log_write_parallelism=32" >> $NDB_PERF_CONFIG
-  mkdir -p $NDB_LOGDIR
   mkdir -p $NDB_LOGDIR/$INSTANCE_ID/1/lst_log
   echo "log_lst_log_level=info" >> $NDB_PERF_CONFIG
   echo "log_lst_log_dir=$NDB_LOGDIR/$INSTANCE_ID/1/lst_log" >> $NDB_PERF_CONFIG
