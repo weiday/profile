@@ -106,15 +106,12 @@ function ndbperfinit()
     LOCALIP=$(hostname -i | awk '{print $1}')
   fi
 
-  BASE_DATADIR=$1
+  INSTANCE_ID=$1
   if [ -z $1 ]; then
-    BASE_DATADIR=$HOME
+    INSTANCE_ID=test$(date +%s)
   fi
 
-  if [ ! -d $BASE_DATADIR ]; then
-    echo "Unable to find base data directory $BASE_DATADIR"
-    return
-  fi
+  BASE_DATADIR=$HOME
 
   NDB_DATADIR=$BASE_DATADIR/ndb_data
   rm -rf $NDB_DATADIR
@@ -157,8 +154,8 @@ function ndbperfinit()
   echo "innodb_data_file_path=ibdata1:512M:autoextend" >> $NDB_PERF_CONFIG
   echo "innodb_file_per_table=1" >> $NDB_PERF_CONFIG
   echo "innodb_buffer_pool_size=128G" >> $NDB_PERF_CONFIG
-  echo "innodb_log_writer_group_commit_timeout=500" >> $NDB_PERF_CONFIG
-  echo "innodb_log_writer_group_commit_len=64K" >> $NDB_PERF_CONFIG
+  echo "innodb_log_writer_group_commit_timeout=100" >> $NDB_PERF_CONFIG
+  echo "innodb_log_writer_group_commit_len=4K" >> $NDB_PERF_CONFIG
   echo "loose-innodb_mock_server_host=localhost:8080" >> $NDB_PERF_CONFIG
   echo "thread_handling=pool-of-threads" >> $NDB_PERF_CONFIG
   echo "thread_pool_size=64" >> $NDB_PERF_CONFIG
@@ -166,9 +163,8 @@ function ndbperfinit()
   echo "thread_pool_idle_timeout=60" >> $NDB_PERF_CONFIG
   echo "thread_pool_max_threads=50000" >> $NDB_PERF_CONFIG
   echo "thread_pool_oversubscribe=128" >> $NDB_PERF_CONFIG
-  echo "log_path=$NDB_PERF_LOG_PATH_1" >> $NDB_PERF_CONFIG
-  echo "data_path=$NDB_PERF_DATA_PATH_2" >> $NDB_PERF_CONFIG
-  INSTANCE_ID=test$(date +%s)
+  echo "log_path=$NDB_PERF_LOG_PATH_3" >> $NDB_PERF_CONFIG
+  echo "data_path=$NDB_PERF_DATA_PATH_4" >> $NDB_PERF_CONFIG
   echo "instance_id=$INSTANCE_ID" >> $NDB_PERF_CONFIG
   echo "log_write_parallelism=32" >> $NDB_PERF_CONFIG
   mkdir -p $NDB_LOGDIR
