@@ -928,6 +928,38 @@ function ndbconnectserver()
   mysql --defaults-file=$SERVER_CONFIG --user=root --password=$NDB_DEFAULT_PASSWORD $DBNAME
 }
 
+function ndbrunserverread()
+{
+  if [ -z "$(cat /etc/issue | grep SUSE)" ]; then
+    LOCALIP=$(hostname -I | awk '{print $1}')
+  else
+    LOCALIP=$(hostname -i | awk '{print $1}')
+  fi
+
+  DBNAME=test
+  DBUSER=root
+  DBINSTANCE=$1
+  DBHOST=$4
+
+  DURATION=$2
+  CONCURRENCY=$3
+  if [ -z $DBINSTANCE ]; then
+    DBINSTANCE=0
+  fi
+  if [ -z $DURATION ]; then
+    DURATION=60
+  fi
+  if [ -z $CONCURRENCY ]; then
+    CONCURRENCY=100
+  fi
+  if [ -z $DBHOST ]; then
+    DBHOST=$LOCALIP
+  fi
+  DBPORT=$(( DBINSTANCE+3600 ))
+
+  sysbench --test=tests/db/oltp.lua --oltp_tables_count=$NDB_DEFAULT_TABLE_COUNT --mysql-db=$DBNAME --oltp-table-size=$NDB_DEFAULT_TABLE_SIZE --mysql-user=$DBUSER --mysql-password=$NDB_DEFAULT_PASSWORD --mysql-port=$DBPORT --mysql-host=$DBHOST --db-dirver=mysql --num-threads=$CONCURRENCY --max-requests=0 --oltp_simple_ranges=0 --oltp-distinct-ranges=0 --oltp-sum-ranges=0 --oltp-order-ranges=0 --rand-seed=42 --max-time=$DURATION --oltp-read-only=on --report-interval=10 --percentile=99 --forced-shutdown=3 run
+}
+
 function ndbconnecthost()
 {
   if [ -z "$(cat /etc/issue | grep SUSE)" ]; then
