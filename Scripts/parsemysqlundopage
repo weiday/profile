@@ -38,8 +38,15 @@ XIDDATASIZE = 128
 
 TRX_UNDO_INSERT_REC = 11 # fresh insert into clustered index
 TRX_UNDO_UPD_EXIST_REC = 12 # update of a non-delete-marked record
-TRX_UNDO_UPD_DEL_REC = 13 # update of a delete marked record to a not delete marked record; also the fields of the record can change
+TRX_UNDO_UPD_DEL_REC = 13 # update of a delete marked record to a not delete
+# marked record; also the fields of the record can change
 TRX_UNDO_DEL_MARK_REC = 14 # delete marking of a record; fields do not change
+
+TRX_UNDO_CMPL_INFO_MULT = 16 # compilation info is multiplied by this and ORed
+# to the type above
+TRX_UNDO_MODIFY_BLOB = 64 # If this bit is set in type_cmpl, then the undo log
+# record has support for partial update of BLOBs. Also to make the undo log
+# format extensible, introducing a new flag next to the type_cmpl flag.
 
 def mach_read_from_1(fp):
     c0, = struct.unpack('B', fp.read(1))
@@ -49,6 +56,10 @@ def mach_read_from_2(fp):
     c0,c1 = struct.unpack('BB', fp.read(2))
     return (c0<<8) + (c1)
 
+def mach_read_from_3(fp):
+    c0,c1,c2 = struct.unpack('BBB', fp.read(3))
+    return (c0<<16) + (c1<<8) + (c2)
+
 def mach_read_from_4(fp):
     c0,c1,c2,c3 = struct.unpack('BBBB', fp.read(4))
     # print ("{0:d} {1:d} {2:d} {3:d}".format(c0, c1, c2, c3)),
@@ -57,6 +68,97 @@ def mach_read_from_4(fp):
 def mach_read_from_8(fp):
     c0,c1,c2,c3,c4,c5,c6,c7 = struct.unpack('BBBBBBBB', fp.read(8))
     return (c0<<56) + (c1<<48) + (c2<<40) + (c3<<32) + (c4<<24) + (c5<<16) + (c6<<8) + (c7)
+
+def mach_read_compressed(fp):
+    val = mach_read_from_1(fp)
+    fp.seek(-1, 1)
+    if val < 0x80:
+        # 0nnnnnnn (7 bits)
+        return (val)
+    elif val < 0xC0:
+        # 10nnnnnn nnnnnnnn (14 bits)
+        val = mach_read_from_2(fp)
+        val = val & 0x3FFF
+        fp.seek(-2, 1)
+        return (val)
+    elif val < 0xE0:
+        # 110nnnnn nnnnnnnn nnnnnnnn (21 bits)
+        val = mach_read_from_3(fp)
+        val = val & 0x1FFFFF
+        fp.seek(-3, 1)
+        return (val)
+    elif val < 0xF0:
+        # 1110nnnn nnnnnnnn nnnnnnnn nnnnnnnn (28 bits)
+        val = mach_read_from_4(fp)
+        val = val & 0xFFFFFFF
+        fp.seek(-4, 1)
+        return (val)
+    else:
+        # 11110000 nnnnnnnn nnnnnnnn nnnnnnnn nnnnnnnn (32 bits)
+        fp.seek(1, 1)
+        val = mach_read_from_4(fp)
+        fp.seek(-5, 1)
+        return (val)
+
+def mach_read_next_compressed(fp):
+    val = mach_read_from_1(fp)
+    fp.seek(-1, 1)
+    if val < 0x80:
+        # 0nnnnnnn (7 bits)
+        fp.seek(1, 1)
+    elif val < 0xC0:
+        # 10nnnnnn nnnnnnnn (14 bits)
+        val = mach_read_from_2(fp)
+        val = val & 0x3FFF
+    elif val < 0xE0:
+        # 110nnnnn nnnnnnnn nnnnnnnn (21 bits)
+        val = mach_read_from_3(fp)
+        val = val & 0x1FFFFF
+    elif val < 0xF0:
+        # 1110nnnn nnnnnnnn nnnnnnnn nnnnnnnn (28 bits)
+        val = mach_read_from_4(fp)
+        val = val & 0xFFFFFFF
+    else:
+        # 11110000 nnnnnnnn nnnnnnnn nnnnnnnn nnnnnnnn (32 bits)
+        fp.seek(1, 1)
+        val = mach_read_from_4(fp)
+    return (val)
+
+def mach_read_next_much_compressed(fp):
+    val = mach_read_from_1(fp)
+    fp.seek(-1, 1)
+    if val < 0x80:
+        # 0nnnnnnn (7 bits)
+        fp.seek(1, 1)
+    elif val < 0xC0:
+        # 10nnnnnn nnnnnnnn (14 bits)
+        val = mach_read_from_2(fp)
+        val = val & 0x3FFF
+    elif val < 0xE0:
+        # 110nnnnn nnnnnnnn nnnnnnnn (21 bits)
+        val = mach_read_from_3(fp)
+        val = val & 0x1FFFFF
+    elif val < 0xF0:
+        # 1110nnnn nnnnnnnn nnnnnnnn nnnnnnnn (28 bits)
+        val = mach_read_from_4(fp)
+        val = val & 0xFFFFFFF
+    elif val == 0xF0:
+        # 11110000 nnnnnnnn nnnnnnnn nnnnnnnn nnnnnnnn (32 bits)
+        fp.seek(1, 1)
+        val = mach_read_from_4(fp)
+    else:
+        # 11111111 followed by up to 64 bits
+        fp.seek(1, 1)
+        val = mach_read_next_compressed(fp)
+        val = val << 32
+        val |= mach_read_next_compressed(fp)
+    return (val)
+
+def mach_u64_read_next_compressed(fp):
+  val = mach_read_next_compressed(fp)
+  val <<= 32
+  val |= mach_read_from_4(fp)
+  return (val)
 
 def hex_print_from_n(bin_fp, report_fp, n):
     cnt = 0
@@ -101,17 +203,36 @@ def print_undo_log_records(bin_fp, report_fp, offset, undo_log_offset, trx_undo_
         next_undo_log_offset = mach_read_from_2(bin_fp)
         print >> report_fp, ("{0:d}".format(next_undo_log_offset))
         undo_rec_type = mach_read_from_1(bin_fp)
+        blob_undo = 0
         if undo_rec_type == TRX_UNDO_INSERT_REC:
-            print >> report_fp, "\tINSERT UNDO REC TYPE:",
-        elif undo_rec_type == TRX_UNDO_UPD_EXIST_REC or undo_rec_type == TRX_UNDO_UPD_DEL_REC or undo_rec_type == TRX_UNDO_DEL_MARK_REC:
-            print >> report_fp, "\tUPDATE UNDO REC TYPE:",
+            print >> report_fp, "\tUNDO REC TYPE:", "TRX_UNDO_INSERT_REC"
         else:
-            print >> report_fp, "\tUNKNOWN UNDO REC TYPE:",
-        print >> report_fp, ("{0:d}".format(undo_rec_type))
+            print >> report_fp, "\tUNDO REC TYPE:",
+            if undo_rec_type > TRX_UNDO_MODIFY_BLOB:
+                print >> report_fp, "TRX_UNDO_MODIFY_BLOB |",
+                undo_rec_type -= TRX_UNDO_MODIFY_BLOB
+                blob_undo = 1
+            if undo_rec_type > TRX_UNDO_CMPL_INFO_MULT:
+                cmpl_info = undo_rec_type / TRX_UNDO_CMPL_INFO_MULT
+                print >> report_fp, ("TRX_UNDO_CMPL_INFO_MULT*{0:d} |".format(cmpl_info)),
+                undo_rec_type -= cmpl_info * TRX_UNDO_CMPL_INFO_MULT
+            if undo_rec_type == TRX_UNDO_UPD_EXIST_REC:
+                print >> report_fp, "TRX_UNDO_UPD_EXIST_REC"
+            elif undo_rec_type == TRX_UNDO_UPD_DEL_REC:
+                print >> report_fp, "TRX_UNDO_UPD_DEL_REC"
+            elif undo_rec_type == TRX_UNDO_DEL_MARK_REC:
+                print >> report_fp, "TRX_UNDO_DEL_MARK_REC"
+            else:
+                print >> report_fp, ("UNKNOWN_{0:d}".format(undo_rec_type))
+        if blob_undo == 1:
+            # Introduced a new 1-byte flag in trx_undo_page_report_modify
+            bin_fp.seek(1, 1)
         print >> report_fp, "\tUNDO REC NO:",
-        print >> report_fp, ("{0:d}".format(mach_read_from_1(bin_fp)))
+        undo_no = mach_read_next_much_compressed(bin_fp)
+        print >> report_fp, ("{0:d}".format(undo_no))
         print >> report_fp, "\tTABLE ID:",
-        print >> report_fp, ("{0:d}".format(mach_read_from_1(bin_fp)))
+        table_id = mach_read_next_much_compressed(bin_fp)
+        print >> report_fp, ("{0:d}".format(table_id))
         if undo_rec_type == TRX_UNDO_INSERT_REC:
             primary_key_offset = bin_fp.tell() - offset
             while primary_key_offset < next_undo_log_offset - 2:
@@ -128,16 +249,16 @@ def print_undo_log_records(bin_fp, report_fp, offset, undo_log_offset, trx_undo_
             print >> report_fp, "\tINFO BITS:",
             hex_print_from_n(bin_fp, report_fp, 1)
             print >> report_fp, "\tDATA_TRX_ID:",
-            hex_print_from_n(bin_fp, report_fp, 6)
+            trx_id = mach_u64_read_next_compressed(bin_fp)
+            print >> report_fp, ("{0:d}".format(trx_id))
             print >> report_fp, "\tDATA_ROLL_PTR:",
-            hex_print_from_n(bin_fp, report_fp, 7)
+            roll_ptr = mach_u64_read_next_compressed(bin_fp)
+            print >> report_fp, ("0x{0:X}".format(roll_ptr))
             print >> report_fp, "\tPRIM_KEY/N_FIELDS/COL_ID/COL:",
             xxx_offset = bin_fp.tell() - offset
             hex_print_from_n(bin_fp, report_fp, next_undo_log_offset - xxx_offset - 2)
             print >> report_fp, "\tOFFSET TO START:",
             print >> report_fp, ("{0:d}".format(mach_read_from_2(bin_fp)))
-        else:
-            break
         undo_log_offset = next_undo_log_offset
         cnt = cnt + 1
 
@@ -147,7 +268,8 @@ def print_undo_log_normal_page(bin_fp, report_fp):
     print >> report_fp, "TRX_UNDO_PAGE_TYPE:",
     print >> report_fp, ("{0:d}".format(mach_read_from_2(bin_fp)))
     print >> report_fp, "TRX_UNDO_PAGE_START:",
-    print >> report_fp, ("{0:d}".format(mach_read_from_2(bin_fp)))
+    trx_undo_page_start = mach_read_from_2(bin_fp)
+    print >> report_fp, ("{0:d}".format(trx_undo_page_start))
     print >> report_fp, "TRX_UNDO_PAGE_FREE:",
     trx_undo_page_free = mach_read_from_2(bin_fp)
     print >> report_fp, ("{0:d}".format(trx_undo_page_free))
@@ -157,8 +279,9 @@ def print_undo_log_normal_page(bin_fp, report_fp):
     next_undo_page_no = mach_read_from_4(bin_fp)
     next_undo_byte_offset = mach_read_from_2(bin_fp)
     print >> report_fp, ("({0:d} {1:d})".format(next_undo_page_no, next_undo_byte_offset))
-    undo_log_offset = bin_fp.tell() - offset
-    print_undo_log_records(bin_fp, report_fp, offset, undo_log_offset, trx_undo_page_free)
+    # undo_log_offset = bin_fp.tell() - offset
+    # print_undo_log_records(bin_fp, report_fp, offset, undo_log_offset, trx_undo_page_free)
+    print_undo_log_records(bin_fp, report_fp, offset, trx_undo_page_start, trx_undo_page_free)
     bin_fp.seek(offset + UNIV_PAGE_SIZE - 8)
     print_fil_tailer(bin_fp, report_fp)
 
