@@ -36,6 +36,11 @@ TRX_SYS_OLD_N_RSEGS = 256
 TRX_RSEG_N_SLOTS = 1024
 XIDDATASIZE = 128
 
+# Types of an undo log segment
+TRX_UNDO_INSERT = 1 # contains undo entries for inserts
+TRX_UNDO_UPDATE = 2 # contains undo entries for updates and delete markings:
+# in short, modifys (the name 'UPDATE' is a historical relic)
+
 TRX_UNDO_INSERT_REC = 11 # fresh insert into clustered index
 TRX_UNDO_UPD_EXIST_REC = 12 # update of a non-delete-marked record
 TRX_UNDO_UPD_DEL_REC = 13 # update of a delete marked record to a not delete
@@ -266,7 +271,13 @@ def print_undo_log_normal_page(bin_fp, report_fp):
     offset = bin_fp.tell()
     print_fil_header(bin_fp, report_fp)
     print >> report_fp, "TRX_UNDO_PAGE_TYPE:",
-    print >> report_fp, ("{0:d}".format(mach_read_from_2(bin_fp)))
+    trx_undo_page_type = mach_read_from_2(bin_fp)
+    if trx_undo_page_type == TRX_UNDO_INSERT:
+        print >> report_fp, "TRX_UNDO_INSERT"
+    elif trx_undo_page_type == TRX_UNDO_UPDATE:
+        print >> report_fp, "TRX_UNDO_UPDATE"
+    else:
+        print >> report_fp, ("UNKNOWN_{0:d}".format(trx_undo_page_type))
     print >> report_fp, "TRX_UNDO_PAGE_START:",
     trx_undo_page_start = mach_read_from_2(bin_fp)
     print >> report_fp, ("{0:d}".format(trx_undo_page_start))
