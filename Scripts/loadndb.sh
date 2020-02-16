@@ -13,14 +13,16 @@ NDB_LOG_PATH_3=blob://store-hl/ndb_test_2/public/
 NDB_LOG_PATH_4=blob://store-hl/hdd-02/public/
 # NVME SSD, LQ
 NDB_LOG_PATH_5=blob://store-hl/ndb_lq_02/public/
-# NVME SSD, HL
-NDB_DATA_PATH_1=blob://store-hl/pst-normal-df-0/public/
 # NVME SSD, LQ
 NDB_DATA_PATH_2=blob://store-hl/pst-normal-nvme-0/public/
 # SATA SSD, HL
 NDB_DATA_PATH_3=blob://store-hl/store-pst-test2/public/
 # NVME SSD, HL-SY
 NDB_DATA_PATH_4=blob://store-hl/pst-normal-nvme-1/public/
+# NVME SSD, LF
+NDB_DATA_PATH_5=blob://store-hl/pst-normal-nvme-2/public/
+# NVME SSD, LF
+NDB_DATA_PATH_6=blob://store-hl/pst-normal-nvme-3/public/
 
 function ndbstart()
 {
