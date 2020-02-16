@@ -3,19 +3,21 @@ NDB_PERF_CONFIG=$HOME/ndb.cnf
 NDB_PERF_DEFAULT_TABLE_COUNT=64
 NDB_PERF_DEFAULT_TABLE_SIZE=10000000
 NDB_PERF_DEFAULT_PASSWORD=TAKE0one
-# HDD
-NDB_PERF_LOG_PATH_1=blob://store-hl/hdd-01/public/
-# HDD, LQ, 6 nodes
+# HDD, LQ
 NDB_PERF_LOG_PATH_2=blob://store-hl/doc_hdd_test3/public/
-# NVME SSD, HL-SY, 3 nodes
+# NVME SSD, HL-SY
 NDB_PERF_LOG_PATH_3=blob://store-hl/ndb_test_2/public/
-# NVME SSD, 6 nodes
+# HDD, HL
+NDB_PERF_LOG_PATH_4=blob://store-hl/hdd-02/public/
+# NVME SSD, LQ
+NDB_PERF_LOG_PATH_5=blob://store-hl/ndb_lq_02/public/
+# NVME SSD, HL
 NDB_PERF_DATA_PATH_1=blob://store-hl/pst-normal-df-0/public/
-# NVME SSD, 10 nodes
+# NVME SSD, LQ
 NDB_PERF_DATA_PATH_2=blob://store-hl/pst-normal-nvme-0/public/
-# SATA SSD, 3 nodes
+# SATA SSD, HL
 NDB_PERF_DATA_PATH_3=blob://store-hl/store-pst-test2/public/
-# NVME SSD, HL-SY, 10 nodes
+# NVME SSD, HL-SY
 NDB_PERF_DATA_PATH_4=blob://store-hl/pst-normal-nvme-1/public/
 
 function ndbperfstart()
