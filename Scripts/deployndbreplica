@@ -1,0 +1,52 @@
+#!/bin/sh
+
+SCP_EXP=$HOME/Scripts/scp.exp
+SSH_EXP=$HOME/Scripts/ssh.exp
+PASSWD=123456
+
+if [ ! -f $HOME/ndb_replica.cnf ]; then
+  echo "$HOME/ndb_replica.cnf does not exist!"
+  return
+fi
+cp $HOME/ndb_replica.cnf /tmp/
+
+INSTANCE_ID=$(cat /tmp/ndb_replica.cnf | grep instance_id | awk -F "=" '{print $2}')
+#HOST_LIST="10.128.29.209 10.128.33.197 10.128.34.223 10.128.39.200 10.128.41.37 10.128.67.203"
+HOST_LIST="10.128.29.209"
+SERVER_ID=3
+for host in $HOST_LIST
+do
+  $SSH_EXP ${host} ${USER} ${PASSWD} "rm -rf $HOME/ndb_log"
+
+  echo "Sync database instance $INSTANCE_ID to $host as replica node #${SERVER_ID}"
+  sed -i "s/server-id=.*/server-id=$SERVER_ID/g" /tmp/ndb_replica.cnf
+  sed -i "s/port=.*/port=3600/g" /tmp/ndb_replica.cnf
+  LST_PATH=$HOME/ndb_log/$INSTANCE_ID/1/lst_log
+  $SSH_EXP ${host} ${USER} ${PASSWD} "mkdir -p $LST_PATH"
+  sed -i "/log_lst_log_dir=/c\log_lst_log_dir=$LST_PATH" /tmp/ndb_replica.cnf
+  PST_PATH=$HOME/ndb_log/$INSTANCE_ID/1/pst_log
+  $SSH_EXP ${host} ${USER} ${PASSWD} "mkdir -p $PST_PATH"
+  sed -i "/log_pst_log_dir=/c\log_pst_log_dir=$PST_PATH" /tmp/ndb_replica.cnf
+  sed -i "/socket=/c\socket=/tmp/ndb.socket.nieyuanyuan.primary" /tmp/ndb_replica.cnf
+  $SCP_EXP /tmp/ndb_replica.cnf ${USER}@${host}:~/ndb_primary.cnf $PASSWD
+  SERVER_ID=$(( SERVER_ID+1 ))
+
+  echo "Sync database instance $INSTANCE_ID to $host as replica node #${SERVER_ID}"
+  sed -i "s/server-id=.*/server-id=$SERVER_ID/g" /tmp/ndb_replica.cnf
+  sed -i "s/port=.*/port=3601/g" /tmp/ndb_replica.cnf
+  LST_PATH=$HOME/ndb_log/$INSTANCE_ID/2/lst_log
+  $SSH_EXP ${host} ${USER} ${PASSWD} "mkdir -p $LST_PATH"
+  sed -i "/log_lst_log_dir=/c\log_lst_log_dir=$LST_PATH" /tmp/ndb_replica.cnf
+  PST_PATH=$HOME/ndb_log/$INSTANCE_ID/2/pst_log
+  $SSH_EXP ${host} ${USER} ${PASSWD} "mkdir -p $PST_PATH"
+  sed -i "/log_pst_log_dir=/c\log_pst_log_dir=$PST_PATH" /tmp/ndb_replica.cnf
+  sed -i "/socket=/c\socket=/tmp/ndb.socket.nieyuanyuan.replica" /tmp/ndb_replica.cnf
+  $SCP_EXP /tmp/ndb_replica.cnf ${USER}@${host}:~/ $PASSWD
+  SERVER_ID=$(( SERVER_ID+1 ))
+
+  echo "${host} ${USER} ${PASSWD}" > /tmp/host.list.tmp
+  deployone /tmp/host.list.tmp ~/primary_data
+  deployone /tmp/host.list.tmp ~/replica_data
+  rm -f /tmp/host.list.tmp
+done
+rm -f /tmp/ndb_replica.cnf
