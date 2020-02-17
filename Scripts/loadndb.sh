@@ -216,15 +216,12 @@ function ndbinit()
     LOCALIP=$(hostname -i | awk '{print $1}')
   fi
 
-  BASE_DATADIR=$1
+  INSTANCE_ID=$1
   if [ -z $1 ]; then
-    BASE_DATADIR=$HOME
+    INSTANCE_ID=test$(date +%s)
   fi
 
-  if [ ! -d $BASE_DATADIR ]; then
-    echo "Unable to find base data directory $BASE_DATADIR"
-    return
-  fi
+  BASE_DATADIR=$HOME
 
   NDB_DATADIR=$BASE_DATADIR/ndb_data
   rm -rf $NDB_DATADIR
@@ -276,7 +273,6 @@ function ndbinit()
   echo "thread_pool_oversubscribe=128" >> $NDB_CONFIG
   echo "log_path=$NDB_LOG_PATH_5" >> $NDB_CONFIG
   echo "data_path=$NDB_DATA_PATH_2" >> $NDB_CONFIG
-  INSTANCE_ID=test$(date +%s)
   echo "instance_id=$INSTANCE_ID" >> $NDB_CONFIG
   echo "log_write_parallelism=32" >> $NDB_CONFIG
   mkdir -p $NDB_LOGDIR
@@ -314,15 +310,12 @@ function ndbinitprimaryreplica()
 
   MYSQLDVER=$(mysqld --version)
 
-  BASE_DATADIR=$1
+  INSTANCE_ID=$1
   if [ -z $1 ]; then
-    BASE_DATADIR=$HOME
+    INSTANCE_ID=test$(date +%s)
   fi
 
-  if [ ! -d $BASE_DATADIR ]; then
-    echo "Unable to find base data directory $BASE_DATADIR"
-    return
-  fi
+  BASE_DATADIR=$HOME
 
   PRIMARY_DATADIR=$BASE_DATADIR/primary_data
   rm -rf $PRIMARY_DATADIR
@@ -378,7 +371,6 @@ function ndbinitprimaryreplica()
   echo "thread_pool_oversubscribe=128" >> $NDB_PRIMARY_CONFIG
   echo "log_path=$NDB_LOG_PATH_5" >> $NDB_PRIMARY_CONFIG
   echo "data_path=$NDB_DATA_PATH_2" >> $NDB_PRIMARY_CONFIG
-  INSTANCE_ID=test$(date +%s)
   echo "instance_id=$INSTANCE_ID" >> $NDB_PRIMARY_CONFIG
   echo "log_write_parallelism=32" >> $NDB_PRIMARY_CONFIG
   mkdir -p $NDB_LOGDIR
@@ -634,6 +626,11 @@ function ndbinitmulti()
     NUM_REPLICAS=15
   fi
 
+  INSTANCE_ID=$2
+  if [ -z $2 ]; then
+    INSTANCE_ID=test$(date +%s)
+  fi
+
   PRIMARY_DATADIR=$PWD/ndb_data_0
   rm -rf $PRIMARY_DATADIR
   PRIMARY_CONFIG=${NDB_CONFIG}.0
@@ -685,7 +682,6 @@ function ndbinitmulti()
   echo "thread_pool_oversubscribe=128" >> $PRIMARY_CONFIG
   echo "log_path=$NDB_LOG_PATH_5" >> $PRIMARY_CONFIG
   echo "data_path=$NDB_DATA_PATH_2" >> $PRIMARY_CONFIG
-  INSTANCE_ID=test$(date +%s)
   echo "instance_id=$INSTANCE_ID" >> $PRIMARY_CONFIG
   echo "log_write_parallelism=32" >> $PRIMARY_CONFIG
   mkdir -p $NDB_LOGDIR
