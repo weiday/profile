@@ -1,0 +1,39 @@
+#!/bin/sh
+
+SCP_EXP=$HOME/Scripts/scp.exp
+SSH_EXP=$HOME/Scripts/ssh.exp
+PASSWD=123456
+
+if [ ! -f $HOME/ndb.cnf ]; then
+  echo "$HOME/ndb.cnf does not exist!"
+  return
+fi
+cp $HOME/ndb.cnf /tmp/
+sed -i "/tmpdir/ a replica-mode=on" /tmp/ndb.cnf
+
+INSTANCE_ID=$(cat /tmp/ndb.cnf | grep instance_id | awk -F "=" '{print $2}')
+#HOST_LIST="10.128.29.29 10.128.33.197 10.128.34.223 10.128.39.200 10.128.41.37 10.128.67.203 10.128.74.47 10.131.59.194 10.131.59.231 10.131.60.136 10.131.64.73"
+HOST_LIST="10.128.29.29"
+SERVER_ID=2
+for host in $HOST_LIST
+do
+  $SSH_EXP ${host} ${USER} ${PASSWD} "rm -rf $HOME/ndb_log"
+  $SSH_EXP ${host} ${USER} ${PASSWD} "rm -rf $HOME/ndb_tmp"
+  $SSH_EXP ${host} ${USER} ${PASSWD} "mkdir -p $HOME/ndb_tmp"
+
+  echo "Sync database instance $INSTANCE_ID to $host as replica node #${SERVER_ID}"
+  sed -i "s/server-id=.*/server-id=$SERVER_ID/g" /tmp/ndb.cnf
+  LST_PATH=$HOME/ndb_log/$INSTANCE_ID/${SERVER_ID}/lst_log
+  $SSH_EXP ${host} ${USER} ${PASSWD} "mkdir -p $LST_PATH"
+  sed -i "/log_lst_log_dir=/c\log_lst_log_dir=$LST_PATH" /tmp/ndb.cnf
+  PST_PATH=$HOME/ndb_log/$INSTANCE_ID/${SERVER_ID}/pst_log
+  $SSH_EXP ${host} ${USER} ${PASSWD} "mkdir -p $PST_PATH"
+  sed -i "/log_pst_log_dir=/c\log_pst_log_dir=$PST_PATH" /tmp/ndb.cnf
+  $SCP_EXP /tmp/ndb.cnf ${USER}@${host}:~/ $PASSWD
+  SERVER_ID=$(( SERVER_ID+1 ))
+
+  echo "${host} ${USER} ${PASSWD}" > /tmp/host.list.tmp
+  deployone /tmp/host.list.tmp ~/ndb_data
+  rm -f /tmp/host.list.tmp
+done
+rm -f /tmp/ndb.cnf
