@@ -5,6 +5,10 @@ log_timestamps=SYSTEM
 explicit_defaults_for_timestamp = 1
 secure-file-priv=NULL
 
+slow_query_log=on
+slow_query_log_file=slow.log
+long_query_time=0.1
+
 ##### basic #####
 innodb_flush_log_at_trx_commit=1
 server-id=1
