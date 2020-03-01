@@ -243,6 +243,16 @@ function showall()
   dstat --cpu --net -N total --disk --disk-util --mem --lock --integer --load --swap
 }
 
+function showhex()
+{
+  hexdump -e '16/1 "%03.2X"' $*
+}
+
+function showhexverbose()
+{
+  hexdump -v -e '"%08.8_ax  "' -e' 4/1 "%02X " "  " 4/1 "%02X " "  "  4/1 "%02X " "  " 4/1 "%02X "  ' -e '" |" 16/1 "%_p" "|\n"' $*
+}
+
 function svnupdate()
 {
   LC_ALL_PREV=$LC_ALL
