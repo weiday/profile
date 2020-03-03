@@ -266,7 +266,7 @@ function ndbinit()
   echo "innodb_data_file_path=ibdata1:512M:autoextend" >> $NDB_CONFIG
   echo "innodb_file_per_table=1" >> $NDB_CONFIG
   echo "innodb_buffer_pool_size=4G" >> $NDB_CONFIG
-  echo "loose-innodb_mock_server_host=localhost:8080" >> $NDB_CONFIG
+  echo "loose-mock_server_host=localhost:8080" >> $NDB_CONFIG
   echo "thread_handling=pool-of-threads" >> $NDB_CONFIG
   echo "thread_pool_size=64" >> $NDB_CONFIG
   echo "thread_pool_stall_limit=10" >> $NDB_CONFIG
@@ -364,7 +364,7 @@ function ndbinitprimaryreplica()
   echo "innodb_data_file_path=ibdata1:512M:autoextend" >> $NDB_PRIMARY_CONFIG
   echo "innodb_file_per_table=1" >> $NDB_PRIMARY_CONFIG
   echo "innodb_buffer_pool_size=4G" >> $NDB_PRIMARY_CONFIG
-  echo "loose-innodb_mock_server_host=localhost:8080" >> $NDB_PRIMARY_CONFIG
+  echo "loose-mock_server_host=localhost:8080" >> $NDB_PRIMARY_CONFIG
   echo "thread_handling=pool-of-threads" >> $NDB_PRIMARY_CONFIG
   echo "thread_pool_size=64" >> $NDB_PRIMARY_CONFIG
   echo "thread_pool_stall_limit=10" >> $NDB_PRIMARY_CONFIG
@@ -420,7 +420,7 @@ function ndbinitprimaryreplica()
   echo "innodb_data_file_path=ibdata1:512M:autoextend" >> $NDB_REPLICA_CONFIG
   echo "innodb_file_per_table=1" >> $NDB_REPLICA_CONFIG
   echo "innodb_buffer_pool_size=4G" >> $NDB_REPLICA_CONFIG
-  echo "loose-innodb_mock_server_host=localhost:8080" >> $NDB_REPLICA_CONFIG
+  echo "loose-mock_server_host=localhost:8080" >> $NDB_REPLICA_CONFIG
   echo "thread_handling=pool-of-threads" >> $NDB_REPLICA_CONFIG
   echo "thread_pool_size=64" >> $NDB_REPLICA_CONFIG
   echo "thread_pool_stall_limit=10" >> $NDB_REPLICA_CONFIG
@@ -675,7 +675,7 @@ function ndbinitmulti()
   echo "innodb_data_file_path=ibdata1:512M:autoextend" >> $PRIMARY_CONFIG
   echo "innodb_file_per_table=1" >> $PRIMARY_CONFIG
   echo "innodb_buffer_pool_size=4G" >> $PRIMARY_CONFIG
-  echo "loose-innodb_mock_server_host=localhost:8080" >> $PRIMARY_CONFIG
+  echo "loose-mock_server_host=localhost:8080" >> $PRIMARY_CONFIG
   echo "thread_handling=pool-of-threads" >> $PRIMARY_CONFIG
   echo "thread_pool_size=64" >> $PRIMARY_CONFIG
   echo "thread_pool_stall_limit=10" >> $PRIMARY_CONFIG
@@ -751,7 +751,7 @@ function ndbinitmulti()
     echo "innodb_data_file_path=ibdata1:512M:autoextend" >> $REPLICA_CONFIG
     echo "innodb_file_per_table=1" >> $REPLICA_CONFIG
     echo "innodb_buffer_pool_size=4G" >> $REPLICA_CONFIG
-    echo "loose-innodb_mock_server_host=localhost:8080" >> $REPLICA_CONFIG
+    echo "loose-mock_server_host=localhost:8080" >> $REPLICA_CONFIG
     echo "thread_handling=pool-of-threads" >> $REPLICA_CONFIG
     echo "thread_pool_size=64" >> $REPLICA_CONFIG
     echo "thread_pool_stall_limit=10" >> $REPLICA_CONFIG
