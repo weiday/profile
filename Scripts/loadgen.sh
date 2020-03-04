@@ -96,7 +96,7 @@ function showdisk()
 
 function showio()
 {
-  iostat -xmd -p ALL 3
+  iostat -xm 3
 }
 
 function showcpu()
