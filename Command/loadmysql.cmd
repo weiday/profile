@@ -1051,3 +1051,35 @@ define mysql_print_buf_flush_list
   set logging file gdb.txt
   set logging overwrite off
 end
+
+define mysql_print_buf_pool_all
+  set logging overwrite on
+  set logging file mysql_buf_pool_all.txt
+  set logging on
+
+  set pagination off
+  set $n_instances=srv_buf_pool_instances
+  set $i=0
+  while ($i<$n_instances)
+    printf "buf_pool_ptr[%d]: (buf_pool_t *) %p\n", $i, &(buf_pool_ptr[$i])
+    set $j=0
+    set $n_chunks=buf_pool_ptr[$i].n_chunks
+    while ($j<$n_chunks)
+      printf "\tbuf_pool_ptr[%d].chunks[%d]: (buf_chunk_t *) %p\n", $i, $j, &(buf_pool_ptr[$i].chunks[$j])
+      set $k=0
+      set $n_blocks=buf_pool_ptr[$i].chunks[$j].size
+      while ($k<$n_blocks)
+        printf "\t\tbuf_pool_ptr[%d].chunks[%d].blocks[%d]: (buf_block_t *) %p\n", $i, $j, $k, &(buf_pool_ptr[$i].chunks[$j].blocks[$k])
+        printf "\t\tpage_id=%u:%u frame=%p\n", buf_pool_ptr[$i].chunks[$j].blocks[$k].page.id.m_space, buf_pool_ptr[$i].chunks[$j].blocks[$k].page.id.m_page_no, buf_pool_ptr[$i].chunks[$j].blocks[$k].frame
+        set $k++
+      end
+      set $j++
+    end
+    set $i++
+  end
+  set pagination on
+
+  set logging off
+  set logging file gdb.txt
+  set logging overwrite off
+end
