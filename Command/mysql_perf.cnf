@@ -15,8 +15,6 @@ server-id=1
 
 ##### for performance purpose #####
 innodb_file_per_table=1
-innodb_checksum_algorithm=none
-innodb_change_buffering=none
 max_connections=50000
 table_open_cache=8192
 sort_buffer_size=4M
