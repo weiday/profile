@@ -737,16 +737,16 @@ define mysql_print_sync_array
           # This is a WaitMutex
           printf "\t\tlatch.mutex: WaitMutex\n"
           set $mutex=(WaitMutex*)$cell.latch
-          if ($mutex->m_lock_word==0)
-            printf "\t\t\tm_lock_word: 0-MUTEX_STATE_UNLOCKED\n"
+          if ($mutex->m_lock_word._M_base._M_i)
+            printf "\t\t\tm_lock_word: atomic operations enabled\n"
+          else
+            printf "\t\t\tm_lock_word: atomic operations disabled\n"
           end
-          if ($mutex->m_lock_word==1)
-            printf "\t\t\tm_lock_word: 0-MUTEX_STATE_LOCKED\n"
+          if ($mutex->m_waiters._M_base._M_i)
+            printf "\t\t\tm_waiters: true\n"
+          else
+            printf "\t\t\tm_waiters: false\n"
           end
-          if ($mutex->m_lock_word==2)
-            printf "\t\t\tm_lock_word: 0-MUTEX_STATE_WAITERS\n"
-          end
-          printf "\t\t\tm_waiters: %d\n", $mutex->m_waiters
           printf "\t\t\tm_policy.m_id: %d\n", $mutex->m_policy.m_id
         end
         if ($lock_type==2)
