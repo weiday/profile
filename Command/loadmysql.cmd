@@ -629,7 +629,8 @@ define mysql_print_recv_t
   printf "End lsn of the log segment: "
   printf "%lu\n", $recv->end_lsn
 
-  set $ptr=((char*)$recv->data) + sizeof(recv_data_t)
+  # set $ptr=((char*)$recv->data) + sizeof(recv_data_t)
+  set $ptr=((char*)$recv) + sizeof(recv_t)
   set $end_ptr=$ptr+$recv->len
   # MLOG_COMP_REC_INSERT
   if ($recv->type==38)
