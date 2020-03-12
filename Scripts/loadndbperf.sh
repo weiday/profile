@@ -171,6 +171,12 @@ function ndbperfinit()
   echo "log_write_parallelism=32" >> $NDB_PERF_CONFIG
   echo "log_lst_dashboard_port=3400" >> $NDB_PERF_CONFIG
   echo "log_pst_dashboard_port=3401" >> $NDB_PERF_CONFIG
+  echo "log_lst_rep_policy_az_policy=3" >> $NDB_PERF_CONFIG
+  echo "log_pst_rep_policy_az_policy=3" >> $NDB_PERF_CONFIG
+  echo "log_lst_rep_policy_replica_num=3" >> $NDB_PERF_CONFIG
+  echo "log_pst_rep_policy_replica_num=6" >> $NDB_PERF_CONFIG
+  echo "log_lst_rep_policy_read_affinity=/sy" >> $NDB_PERF_CONFIG
+  echo "log_pst_rep_policy_read_affinity=/sy" >> $NDB_PERF_CONFIG
   echo "innodb_log_replay_threads=16" >> $NDB_PERF_CONFIG
   mkdir -p $NDB_LOGDIR/$INSTANCE_ID/1/lst_log
   echo "log_lst_log_level=info" >> $NDB_PERF_CONFIG
