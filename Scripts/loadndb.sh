@@ -12,15 +12,13 @@ NDB_LOG_PATH_2=blob://store-hl/ndb_3az/public/
 # NVME SSD, LQ
 NDB_LOG_PATH_3=blob://store-hl/ndb_lq_01/public/
 # NVME SSD, LQ
-NDB_DATA_PATH_2=blob://store-hl/store-pst-test4/public/
-# SATA SSD, HL
-NDB_DATA_PATH_3=blob://store-hl/store-pst-test2/public/
+NDB_DATA_PATH_2=blob://store-hl/pst-normal-nvme-0/public/
 # NVME SSD, HL-SY
 NDB_DATA_PATH_4=blob://store-hl/pst-normal-nvme-1/public/
 # NVME SSD, LF
-NDB_DATA_PATH_5=blob://store-hl/pst-normal-nvme-2/public/
-# NVME SSD, LF
 NDB_DATA_PATH_6=blob://store-hl/pst-normal-nvme-3/public/
+# NVME SSD, LF-SY-LQ
+NDB_DATA_PATH_8=blob://store-hl/pst-lf-sy-lq-001/public/
 
 function ndbstart()
 {
@@ -269,7 +267,7 @@ function ndbinit()
   echo "thread_pool_idle_timeout=60" >> $NDB_CONFIG
   echo "thread_pool_max_threads=50000" >> $NDB_CONFIG
   echo "thread_pool_oversubscribe=128" >> $NDB_CONFIG
-  echo "log_path=$NDB_LOG_PATH_1" >> $NDB_CONFIG
+  echo "log_path=$NDB_LOG_PATH_3" >> $NDB_CONFIG
   echo "data_path=$NDB_DATA_PATH_2" >> $NDB_CONFIG
   echo "instance_id=$INSTANCE_ID" >> $NDB_CONFIG
   echo "log_write_parallelism=32" >> $NDB_CONFIG
@@ -367,7 +365,7 @@ function ndbinitprimaryreplica()
   echo "thread_pool_idle_timeout=60" >> $NDB_PRIMARY_CONFIG
   echo "thread_pool_max_threads=50000" >> $NDB_PRIMARY_CONFIG
   echo "thread_pool_oversubscribe=128" >> $NDB_PRIMARY_CONFIG
-  echo "log_path=$NDB_LOG_PATH_1" >> $NDB_PRIMARY_CONFIG
+  echo "log_path=$NDB_LOG_PATH_3" >> $NDB_PRIMARY_CONFIG
   echo "data_path=$NDB_DATA_PATH_2" >> $NDB_PRIMARY_CONFIG
   echo "instance_id=$INSTANCE_ID" >> $NDB_PRIMARY_CONFIG
   echo "log_write_parallelism=32" >> $NDB_PRIMARY_CONFIG
@@ -423,7 +421,7 @@ function ndbinitprimaryreplica()
   echo "thread_pool_idle_timeout=60" >> $NDB_REPLICA_CONFIG
   echo "thread_pool_max_threads=50000" >> $NDB_REPLICA_CONFIG
   echo "thread_pool_oversubscribe=128" >> $NDB_REPLICA_CONFIG
-  echo "log_path=$NDB_LOG_PATH_1" >> $NDB_REPLICA_CONFIG
+  echo "log_path=$NDB_LOG_PATH_3" >> $NDB_REPLICA_CONFIG
   echo "data_path=$NDB_DATA_PATH_2" >> $NDB_REPLICA_CONFIG
   echo "instance_id=$INSTANCE_ID" >> $NDB_REPLICA_CONFIG
   echo "log_write_parallelism=32" >> $NDB_REPLICA_CONFIG
@@ -678,7 +676,7 @@ function ndbinitmulti()
   echo "thread_pool_idle_timeout=60" >> $PRIMARY_CONFIG
   echo "thread_pool_max_threads=50000" >> $PRIMARY_CONFIG
   echo "thread_pool_oversubscribe=128" >> $PRIMARY_CONFIG
-  echo "log_path=$NDB_LOG_PATH_1" >> $PRIMARY_CONFIG
+  echo "log_path=$NDB_LOG_PATH_3" >> $PRIMARY_CONFIG
   echo "data_path=$NDB_DATA_PATH_2" >> $PRIMARY_CONFIG
   echo "instance_id=$INSTANCE_ID" >> $PRIMARY_CONFIG
   echo "log_write_parallelism=32" >> $PRIMARY_CONFIG
@@ -754,7 +752,7 @@ function ndbinitmulti()
     echo "thread_pool_idle_timeout=60" >> $REPLICA_CONFIG
     echo "thread_pool_max_threads=50000" >> $REPLICA_CONFIG
     echo "thread_pool_oversubscribe=128" >> $REPLICA_CONFIG
-    echo "log_path=$NDB_LOG_PATH_1" >> $REPLICA_CONFIG
+    echo "log_path=$NDB_LOG_PATH_3" >> $REPLICA_CONFIG
     echo "data_path=$NDB_DATA_PATH_2" >> $REPLICA_CONFIG
     echo "instance_id=$INSTANCE_ID" >> $REPLICA_CONFIG
     echo "log_write_parallelism=32" >> $REPLICA_CONFIG

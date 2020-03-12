@@ -11,14 +11,12 @@ NDB_PERF_LOG_PATH_2=blob://store-hl/ndb_3az/public/
 NDB_PERF_LOG_PATH_3=blob://store-hl/ndb_lq_01/public/
 # NVME SSD, LQ
 NDB_PERF_DATA_PATH_2=blob://store-hl/pst-normal-nvme-0/public/
-# SATA SSD, HL
-NDB_PERF_DATA_PATH_3=blob://store-hl/store-pst-test2/public/
 # NVME SSD, HL-SY
 NDB_PERF_DATA_PATH_4=blob://store-hl/pst-normal-nvme-1/public/
 # NVME SSD, LF
-NDB_PERF_DATA_PATH_5=blob://store-hl/pst-normal-nvme-2/public/
-# NVME SSD, LF
 NDB_PERF_DATA_PATH_6=blob://store-hl/pst-normal-nvme-3/public/
+# NVME SSD, LF-SY-LQ
+NDB_PERF_DATA_PATH_8=blob://store-hl/pst-lf-sy-lq-001/public/
 
 function ndbperfstart()
 {
@@ -168,7 +166,7 @@ function ndbperfinit()
   echo "thread_pool_max_threads=50000" >> $NDB_PERF_CONFIG
   echo "thread_pool_oversubscribe=128" >> $NDB_PERF_CONFIG
   echo "log_path=$NDB_PERF_LOG_PATH_2" >> $NDB_PERF_CONFIG
-  echo "data_path=$NDB_PERF_DATA_PATH_4" >> $NDB_PERF_CONFIG
+  echo "data_path=$NDB_PERF_DATA_PATH_8" >> $NDB_PERF_CONFIG
   echo "instance_id=$INSTANCE_ID" >> $NDB_PERF_CONFIG
   echo "log_write_parallelism=32" >> $NDB_PERF_CONFIG
   echo "log_lst_dashboard_port=3400" >> $NDB_PERF_CONFIG
