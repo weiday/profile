@@ -3,16 +3,10 @@ NDB_PERF_CONFIG=$HOME/ndb.cnf
 NDB_PERF_DEFAULT_TABLE_COUNT=64
 NDB_PERF_DEFAULT_TABLE_SIZE=10000000
 NDB_PERF_DEFAULT_PASSWORD=TAKE0one
-# HDD, LQ
-NDB_PERF_LOG_PATH_2=blob://store-hl/doc_hdd_test3/public/
-# NVME SSD, HL-SY
-NDB_PERF_LOG_PATH_3=blob://store-hl/ndb_test_2/public/
-# HDD, HL
-NDB_PERF_LOG_PATH_4=blob://store-hl/hdd-02/public/
-# NVME SSD, LQ
-NDB_PERF_LOG_PATH_5=blob://store-hl/ndb_lq_02/public/
 # NVME SSD, LF
-NDB_PERF_LOG_PATH_6=blob://store-hl/ndb_lf_01/public/
+NDB_PERF_LOG_PATH_1=blob://store-hl/ndb_lf_01/public/
+# NVME SSD, LF-SY-LQ
+NDB_PERF_LOG_PATH_2=blob://store-hl/ndb_3az/public/
 # NVME SSD, LQ
 NDB_PERF_DATA_PATH_2=blob://store-hl/pst-normal-nvme-0/public/
 # SATA SSD, HL
@@ -171,10 +165,13 @@ function ndbperfinit()
   echo "thread_pool_idle_timeout=60" >> $NDB_PERF_CONFIG
   echo "thread_pool_max_threads=50000" >> $NDB_PERF_CONFIG
   echo "thread_pool_oversubscribe=128" >> $NDB_PERF_CONFIG
-  echo "log_path=$NDB_PERF_LOG_PATH_3" >> $NDB_PERF_CONFIG
+  echo "log_path=$NDB_PERF_LOG_PATH_2" >> $NDB_PERF_CONFIG
   echo "data_path=$NDB_PERF_DATA_PATH_4" >> $NDB_PERF_CONFIG
   echo "instance_id=$INSTANCE_ID" >> $NDB_PERF_CONFIG
   echo "log_write_parallelism=32" >> $NDB_PERF_CONFIG
+  echo "log_lst_dashboard_port=3400" >> $NDB_PERF_CONFIG
+  echo "log_pst_dashboard_port=3401" >> $NDB_PERF_CONFIG
+  echo "innodb_log_replay_threads=16" >> $NDB_PERF_CONFIG
   mkdir -p $NDB_LOGDIR/$INSTANCE_ID/1/lst_log
   echo "log_lst_log_level=info" >> $NDB_PERF_CONFIG
   echo "log_lst_log_dir=$NDB_LOGDIR/$INSTANCE_ID/1/lst_log" >> $NDB_PERF_CONFIG
