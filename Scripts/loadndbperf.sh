@@ -8,6 +8,8 @@ NDB_PERF_LOG_PATH_1=blob://store-hl/ndb_lf_01/public/
 # NVME SSD, LF-SY-LQ
 NDB_PERF_LOG_PATH_2=blob://store-hl/ndb_3az/public/
 # NVME SSD, LQ
+NDB_PERF_LOG_PATH_3=blob://store-hl/ndb_lq_01/public/
+# NVME SSD, LQ
 NDB_PERF_DATA_PATH_2=blob://store-hl/pst-normal-nvme-0/public/
 # SATA SSD, HL
 NDB_PERF_DATA_PATH_3=blob://store-hl/store-pst-test2/public/
