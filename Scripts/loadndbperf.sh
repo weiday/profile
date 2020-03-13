@@ -169,6 +169,9 @@ function ndbperfinit()
   echo "data_path=$NDB_PERF_DATA_PATH_8" >> $NDB_PERF_CONFIG
   echo "instance_id=$INSTANCE_ID" >> $NDB_PERF_CONFIG
   echo "log_write_parallelism=32" >> $NDB_PERF_CONFIG
+  echo "log_split_thread_num=4" >> $NDB_PERF_CONFIG
+  echo "log_lst_merge_interval_us=5000" >> $NDB_PERF_CONFIG
+  echo "log_lst_merge_size=8M" >> $NDB_PERF_CONFIG
   echo "log_lst_dashboard_port=3400" >> $NDB_PERF_CONFIG
   echo "log_pst_dashboard_port=3401" >> $NDB_PERF_CONFIG
   echo "log_lst_rep_policy_az_policy=3" >> $NDB_PERF_CONFIG
