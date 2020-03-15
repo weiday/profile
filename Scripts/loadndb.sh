@@ -271,6 +271,8 @@ function ndbinit()
   echo "data_path=$NDB_DATA_PATH_2" >> $NDB_CONFIG
   echo "instance_id=$INSTANCE_ID" >> $NDB_CONFIG
   echo "log_write_parallelism=32" >> $NDB_CONFIG
+  echo "log_lst_dashboard_port=3400" >> $NDB_CONFIG
+  echo "log_pst_dashboard_port=3401" >> $NDB_CONFIG
   mkdir -p $NDB_LOGDIR
   mkdir -p $NDB_LOGDIR/$INSTANCE_ID/1/lst_log
   echo "log_lst_log_level=info" >> $NDB_CONFIG
