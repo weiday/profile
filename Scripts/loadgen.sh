@@ -253,6 +253,12 @@ function showhexverbose()
   hexdump -v -e '"%08.8_ax  "' -e' 4/1 "%02X " "  " 4/1 "%02X " "  "  4/1 "%02X " "  " 4/1 "%02X "  ' -e '" |" 16/1 "%_p" "|\n"' $*
 }
 
+function showgitname()
+{
+  # git diff-tree --no-commit-id --name-only -r $*
+  git show --pretty="" --name-only $*
+}
+
 function svnupdate()
 {
   LC_ALL_PREV=$LC_ALL
