@@ -270,7 +270,6 @@ function ndbinit()
   echo "log_path=$NDB_LOG_PATH_3" >> $NDB_CONFIG
   echo "data_path=$NDB_DATA_PATH_2" >> $NDB_CONFIG
   echo "instance_id=$INSTANCE_ID" >> $NDB_CONFIG
-  echo "log_write_parallelism=32" >> $NDB_CONFIG
   echo "log_lst_dashboard_port=3400" >> $NDB_CONFIG
   echo "log_pst_dashboard_port=3401" >> $NDB_CONFIG
   mkdir -p $NDB_LOGDIR
@@ -370,7 +369,6 @@ function ndbinitprimaryreplica()
   echo "log_path=$NDB_LOG_PATH_3" >> $NDB_PRIMARY_CONFIG
   echo "data_path=$NDB_DATA_PATH_2" >> $NDB_PRIMARY_CONFIG
   echo "instance_id=$INSTANCE_ID" >> $NDB_PRIMARY_CONFIG
-  echo "log_write_parallelism=32" >> $NDB_PRIMARY_CONFIG
   mkdir -p $NDB_LOGDIR
   mkdir -p $NDB_LOGDIR/$INSTANCE_ID/1/lst_log
   echo "log_lst_log_level=info" >> $NDB_PRIMARY_CONFIG
@@ -426,7 +424,6 @@ function ndbinitprimaryreplica()
   echo "log_path=$NDB_LOG_PATH_3" >> $NDB_REPLICA_CONFIG
   echo "data_path=$NDB_DATA_PATH_2" >> $NDB_REPLICA_CONFIG
   echo "instance_id=$INSTANCE_ID" >> $NDB_REPLICA_CONFIG
-  echo "log_write_parallelism=32" >> $NDB_REPLICA_CONFIG
   mkdir -p $NDB_LOGDIR/$INSTANCE_ID/2/lst_log
   echo "log_lst_log_level=info" >> $NDB_REPLICA_CONFIG
   echo "log_lst_log_dir=$NDB_LOGDIR/$INSTANCE_ID/2/lst_log" >> $NDB_REPLICA_CONFIG
@@ -681,7 +678,6 @@ function ndbinitmulti()
   echo "log_path=$NDB_LOG_PATH_3" >> $PRIMARY_CONFIG
   echo "data_path=$NDB_DATA_PATH_2" >> $PRIMARY_CONFIG
   echo "instance_id=$INSTANCE_ID" >> $PRIMARY_CONFIG
-  echo "log_write_parallelism=32" >> $PRIMARY_CONFIG
   mkdir -p $NDB_LOGDIR
   mkdir -p $NDB_LOGDIR/$INSTANCE_ID/0/lst_log
   echo "log_lst_log_level=info" >> $PRIMARY_CONFIG
@@ -757,7 +753,6 @@ function ndbinitmulti()
     echo "log_path=$NDB_LOG_PATH_3" >> $REPLICA_CONFIG
     echo "data_path=$NDB_DATA_PATH_2" >> $REPLICA_CONFIG
     echo "instance_id=$INSTANCE_ID" >> $REPLICA_CONFIG
-    echo "log_write_parallelism=32" >> $REPLICA_CONFIG
     mkdir -p $NDB_LOGDIR/$INSTANCE_ID/${i}/lst_log
     echo "log_lst_log_level=info" >> $REPLICA_CONFIG
     echo "log_lst_log_dir=$NDB_LOGDIR/$INSTANCE_ID/${i}/lst_log" >> $REPLICA_CONFIG
