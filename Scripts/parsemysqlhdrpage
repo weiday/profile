@@ -283,6 +283,13 @@ def print_fsp_hdr_content(bin_fp, report_fp):
 
 def print_inode_content(bin_fp, report_fp):
     print >> report_fp, "--- Index node page ---"
+    print >> report_fp, "FSEG_INODE_PAGE_NODE:"
+    print >> report_fp, "- FLST_PREV [FIL_ADDR_PAGE, FIL_ADDR_BYTE]:",
+    print >> report_fp, ("[{0:d},".format(mach_read_from_4(bin_fp))),
+    print >> report_fp, ("{0:d}]".format(mach_read_from_2(bin_fp)))
+    print >> report_fp, "- FLST_NEXT [FIL_ADDR_PAGE, FIL_ADDR_BYTE]:",
+    print >> report_fp, ("[{0:d},".format(mach_read_from_4(bin_fp))),
+    print >> report_fp, ("{0:d}]".format(mach_read_from_2(bin_fp)))
     cnt = 0
     while cnt < 85:
       print >> report_fp, ("> INODE #{0:d}".format(cnt))
@@ -339,7 +346,7 @@ def print_fsp_hdr_page(bin_fp, report_fp):
         bin_fp.seek(offset + FIL_PAGE_DATA)
         print_fsp_hdr_content(bin_fp, report_fp)
     elif page_type == FIL_PAGE_INODE:
-        bin_fp.seek(offset + FSEG_ARR_OFFSET)
+        bin_fp.seek(offset + FIL_PAGE_DATA)
         print_inode_content(bin_fp, report_fp)
     elif page_type == FIL_PAGE_TYPE_XDES:
         bin_fp.seek(offset + FIL_PAGE_DATA + FSP_HEADER_SIZE)
