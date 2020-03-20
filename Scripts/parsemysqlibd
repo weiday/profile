@@ -586,7 +586,7 @@ def print_undo_log_records(bin_fp, report_fp, offset, undo_log_offset, trx_undo_
         undo_log_offset = next_undo_log_offset
         cnt = cnt + 1
 
-def print_undo_log_normal_page(bin_fp, report_fp):
+def print_undo_log_normal_page(bin_fp, report_fp, offset):
     print >> report_fp, "TRX_UNDO_PAGE_TYPE:",
     trx_undo_page_type = mach_read_from_2(bin_fp)
     if trx_undo_page_type == TRX_UNDO_INSERT:
@@ -632,7 +632,7 @@ def print_ibd_page(bin_fp, report_fp):
         print_page_directory(bin_fp, report_fp, page_n_dir_slots)
     elif fil_page_type == FIL_PAGE_UNDO_LOG:
         bin_fp.seek(offset + FIL_PAGE_DATA)
-        print_undo_log_normal_page(bin_fp, report_fp)
+        print_undo_log_normal_page(bin_fp, report_fp, offset)
     bin_fp.seek(offset + UNIV_PAGE_SIZE - 8)
     print_fil_tailer(bin_fp, report_fp)
 
