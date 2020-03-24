@@ -607,8 +607,9 @@ def print_undo_log_segment_header(bin_fp, report_fp, offset):
         print >> report_fp, "TRX_UNDO_STATE: TRX_UNDO_PREPARED"
     else:
         print >> report_fp, ("TRX_UNDO_STATE: UNKNOWN_{0:d}".format(trx_undo_state))
+    trx_undo_last_log = mach_read_from_2(bin_fp)
     print >> report_fp, "TRX_UNDO_LAST_LOG:",
-    print >> report_fp, ("{0:d}".format(mach_read_from_2(bin_fp)))
+    print >> report_fp, ("{0:d}".format(trx_undo_last_log))
     print >> report_fp, "TRX_UNDO_FSEG_HEADER (SPACE:PAGE_NO OFFSET):",
     print >> report_fp, ("({0:d}:{1:d} {2:d})".format(mach_read_from_4(bin_fp), mach_read_from_4(bin_fp), mach_read_from_2(bin_fp)))
     print >> report_fp, "TRX_UNDO_PAGE_LIST (FLST_LEN):",
@@ -617,10 +618,10 @@ def print_undo_log_segment_header(bin_fp, report_fp, offset):
     print >> report_fp, ("({0:d} {1:d})".format(mach_read_from_4(bin_fp), mach_read_from_2(bin_fp)))
     print >> report_fp, "TRX_UNDO_PAGE_LIST (FLST_LAST):",
     print >> report_fp, ("({0:d} {1:d})".format(mach_read_from_4(bin_fp), mach_read_from_2(bin_fp)))
-    cnt = 0
+    bin_fp.seek(offset + trx_undo_last_log)
     while True:
         ptr = bin_fp.tell() - offset
-        print >> report_fp, "Undo log header #" + str(cnt) + " at offset " + str(ptr) + ":"
+        print >> report_fp, "Undo log header at offset " + str(ptr) + ":"
         print >> report_fp, "\tTRX_UNDO_TRX_ID:",
         print >> report_fp, ("{0:d}".format(mach_read_from_8(bin_fp)))
         print >> report_fp, "\tTRX_UNDO_TRX_NO:",
@@ -636,10 +637,10 @@ def print_undo_log_segment_header(bin_fp, report_fp, offset):
         print >> report_fp, "\tTRX_UNDO_TABLE_ID:",
         print >> report_fp, ("{0:d}".format(mach_read_from_8(bin_fp)))
         print >> report_fp, "\tTRX_UNDO_NEXT_LOG:",
-        trx_undo_next_log = mach_read_from_2(bin_fp)
-        print >> report_fp, ("{0:d}".format(trx_undo_next_log))
-        print >> report_fp, "\tTRX_UNDO_PREV_LOG:",
         print >> report_fp, ("{0:d}".format(mach_read_from_2(bin_fp)))
+        print >> report_fp, "\tTRX_UNDO_PREV_LOG:",
+        trx_undo_prev_log = mach_read_from_2(bin_fp)
+        print >> report_fp, ("{0:d}".format(trx_undo_prev_log))
         print >> report_fp, "\tTRX_UNDO_HISTORY_NODE (FLST_PREV):",
         print >> report_fp, ("({0:d} {1:d})".format(mach_read_from_4(bin_fp), mach_read_from_2(bin_fp)))
         print >> report_fp, "\tTRX_UNDO_HISTORY_NODE (FLST_NEXT):",
@@ -652,11 +653,9 @@ def print_undo_log_segment_header(bin_fp, report_fp, offset):
         print >> report_fp, ("{0:d}".format(mach_read_from_4(bin_fp)))
         print >> report_fp, "\tTRX_UNDO_XA_XID:",
         hex_print_from_n(bin_fp, report_fp, XIDDATASIZE)
-        if trx_undo_next_log == 0:
+        if trx_undo_prev_log == 0:
             break
-        bin_fp.seek(offset + trx_undo_next_log)
-        ptr = bin_fp.tell() - offset
-        cnt = cnt + 1
+        bin_fp.seek(offset + trx_undo_prev_log)
 
 def print_undo_log_normal_page(bin_fp, report_fp, offset):
     print >> report_fp, "--- UNDO LOG NORMAL PAGE ---"
