@@ -581,9 +581,21 @@ def print_undo_log_records(bin_fp, report_fp, offset, undo_log_offset, trx_undo_
             print >> report_fp, "\tDATA_TRX_ID:",
             trx_id = mach_u64_read_next_compressed(bin_fp)
             print >> report_fp, ("{0:d}".format(trx_id))
-            print >> report_fp, "\tDATA_ROLL_PTR:",
+            print >> report_fp, "\tDATA_ROLL_PTR:"
             roll_ptr = mach_u64_read_next_compressed(bin_fp)
-            print >> report_fp, ("0x{0:X}".format(roll_ptr))
+            print >> report_fp, "\t- offset:",
+            print >> report_fp, ("{0:d}".format(roll_ptr & 0xFFFF))
+            roll_ptr = (roll_ptr >> 16)
+            print >> report_fp, "\t- page no:",
+            print >> report_fp, ("{0:d}".format(roll_ptr & 0xFFFFFFFF))
+            roll_ptr = (roll_ptr >> 32)
+            print >> report_fp, "\t- rollback segment id:",
+            print >> report_fp, ("{0:d}".format(roll_ptr & 0x7F))
+            roll_ptr = (roll_ptr >> 7)
+            if roll_ptr == 1:
+                print >> report_fp, "\t- is insert: TRUE"
+            else:
+                print >> report_fp, "\t- is insert: FALSE"
             print >> report_fp, "\tPRIM_KEY/N_FIELDS/COL_ID/COL:",
             xxx_offset = bin_fp.tell() - offset
             hex_print_from_n(bin_fp, report_fp, next_undo_log_offset - xxx_offset - 2)
