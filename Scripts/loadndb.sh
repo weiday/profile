@@ -451,7 +451,10 @@ function ndbinitprimaryreplica()
 function ndbattach()
 {
   MYSQLD=$NDB_BASEDIR/bin/mysqld
-  NDBPROC=$(ps -ef | grep $USER | grep mysqld | grep "$NDB_CONFIG" | grep -v safe | grep -v grep | awk '{print $2}')
+  NDBPROC=$1
+  if [ -z $NDBPROC ]; then
+    NDBPROC=$(ps -ef | grep $USER | grep mysqld | grep "$NDB_CONFIG" | grep -v safe | grep -v grep | awk '{print $2}')
+  fi
   if [ -z "$NDBPROC" ]; then
     echo "Can't find the mysqld to be attached"
   else
